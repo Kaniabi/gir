@@ -1,0 +1,7 @@
+flask
+jsonpath-rw
+redis
+requests
+rq
+slackclient
+pytest
