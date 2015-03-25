@@ -7,7 +7,7 @@ MAINTAINER Alexandre Andrade <kaniabi@gmail.com>
 RUN apt-get update
 RUN apt-get install -y nginx
 RUN apt-get install -y supervisor
-RUN apt-get install -y python-pip3
+RUN apt-get install -y python3-pip
 
 # Update working directories
 ADD ./app /app
