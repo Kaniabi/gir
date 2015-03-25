@@ -9,6 +9,11 @@ import json
 app = Flask('gir')
 slack = Slack()
 
+@app.route("/")
+def index():
+    return "Hello, from GIR!"
+
+
 @app.route("/message", methods=['POST'])
 def message():
     message = '`message`'
