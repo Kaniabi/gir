@@ -6,7 +6,7 @@ import json
 
 
 
-app = Flask('gir')
+app = Flask(__name__)
 slack = Slack()
 
 @app.route("/")
