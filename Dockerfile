@@ -3,16 +3,18 @@
 FROM phusion/baseimage:0.9.16
 MAINTAINER Alexandre Andrade <kaniabi@gmail.com>
 
-# install dependencies
+# Install dependencies
 RUN apt-get update
 RUN apt-get install -y nginx
 RUN apt-get install -y supervisor
-RUN apt-get install -y python-pip python-dev
-RUN pip install uwsgi flask
+RUN apt-get install -y python-pip3
 
-# update working directories
+# Update working directories
 ADD ./app /app
 ADD ./config /config
+
+# Install application requirements
+RUN pip3 install -r /config/requirements.txt
 
 # setup config
 RUN echo "\ndaemon off;" >> /etc/nginx/nginx.conf
