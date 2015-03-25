@@ -1,6 +1,7 @@
+/.idea/
+/.vagrant/
 __pycache__/
 *.swp
 *.py[cod]
 *.DS_Store
 env/
-/.idea/
