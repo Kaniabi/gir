@@ -9,8 +9,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box_url = "https://oss-binaries.phusionpassenger.com/vagrant/boxes/latest/ubuntu-14.04-amd64-vbox.box"
 
   config.vm.network :forwarded_port, guest: 22, host: 2222, id: "ssh", disabled: true
-  config.vm.network :forwarded_port, guest: 22, host: 5122, id: "ssh", auto_correct: true
-  config.vm.network :forwarded_port, guest: 80, host: 5180, id: "http", auto_correct: true
+  config.vm.network :forwarded_port, guest: 22, host: 5122, auto_correct: true
+  config.vm.network :forwarded_port, guest: 80, host: 5180, id: "http"
 
   config.vm.provider :virtualbox do |vb|
     vb.name = NAME
