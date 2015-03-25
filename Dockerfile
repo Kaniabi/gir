@@ -1,5 +1,6 @@
-# start with a base image
-FROM ubuntu:14.10
+# Using phusion baseimage as explained here:
+#   https://github.com/phusion/baseimage-docker
+FROM phusion/baseimage:0.9.16
 MAINTAINER Alexandre Andrade <kaniabi@gmail.com>
 
 # install dependencies
