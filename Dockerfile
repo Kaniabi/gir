@@ -7,8 +7,8 @@ MAINTAINER Alexandre Andrade <kaniabi@gmail.com>
 RUN apt-get update
 RUN apt-get install -y nginx
 RUN apt-get install -y supervisor
-RUN apt-get install -y python3-pip
-RUN pip3 install uwsgi flask
+RUN apt-get install -y python-pip
+RUN pip install uwsgi flask
 
 # update working directories
 ADD ./app /app
