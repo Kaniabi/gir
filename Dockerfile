@@ -6,6 +6,7 @@ MAINTAINER Alexandre Andrade <kaniabi@gmail.com>
 # Install dependencies
 RUN apt-get update
 RUN apt-get install -y nginx
+RUN apt-get install -y redis-server
 RUN apt-get install -y supervisor
 RUN apt-get install -y python3-pip
 
@@ -13,14 +14,21 @@ RUN apt-get install -y python3-pip
 ADD ./app /app
 ADD ./config /config
 
-# Install application requirements
+# Install application requirements (python3)
 RUN pip3 install -r /config/requirements.txt
 
-# setup config
-RUN echo "\ndaemon off;" >> /etc/nginx/nginx.conf
-RUN rm /etc/nginx/sites-enabled/default
+# Configure redis-server
+# . No daemon since we're using supervisord
+RUN sed -i 's/^\(daemonize\s*\)yes\s*$/\1no/g' /etc/redis/redis.conf
 
+# Configure nginx
+# . No daemon since we're using supervisord
+RUN echo "\ndaemon off;" >> /etc/nginx/nginx.conf
+# . Replace default site by nginx.conf
+RUN rm /etc/nginx/sites-enabled/default
 RUN ln -s /config/nginx.conf /etc/nginx/sites-enabled/
+
+# Configure supervisor
 RUN ln -s /config/supervisor.conf /etc/supervisor/conf.d/
 
 EXPOSE 80
