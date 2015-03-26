@@ -28,6 +28,10 @@ RUN echo "\ndaemon off;" >> /etc/nginx/nginx.conf
 RUN rm /etc/nginx/sites-enabled/default
 RUN ln -s /config/nginx.conf /etc/nginx/sites-enabled/
 
+# Configure python-rq
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8
+
 # Configure supervisor
 RUN ln -s /config/supervisor.conf /etc/supervisor/conf.d/
 
