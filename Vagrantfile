@@ -12,9 +12,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network :forwarded_port, guest: 22, host: 5122, auto_correct: true
   config.vm.network :forwarded_port, guest: 80, host: 5180, id: "http"
 
-  config.vm.provider :virtualbox do |vb|
-    vb.name = NAME
-    vb.gui = true
+  config.vm.provider :virtualbox do |v|
+    v.name = NAME
+    v.gui = true
   end
 
   if Dir.glob("#{File.dirname(__FILE__)}/.vagrant/machines/default/*/id").empty?
