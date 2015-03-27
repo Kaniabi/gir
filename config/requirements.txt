@@ -6,3 +6,4 @@ requests
 rq
 slackclient
 pytest
+rq-dashboard

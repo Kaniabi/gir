@@ -11,7 +11,6 @@ RUN apt-get install -y supervisor
 RUN apt-get install -y python3-pip
 
 # Update working directories
-ADD ./app /app
 ADD ./config /config
 
 # Install application requirements (python3)
@@ -34,6 +33,9 @@ ENV LANG=C.UTF-8
 
 # Configure supervisor
 RUN ln -s /config/supervisor.conf /etc/supervisor/conf.d/
+
+# Add app last to easy changes in the code
+ADD ./app /app
 
 EXPOSE 80
 CMD ["supervisord", "-n"]

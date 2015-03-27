@@ -1,12 +1,14 @@
 from __future__ import unicode_literals
-from worker import Slack
 from flask import Flask, request
 from jsonsub import JsonSub, Remapping
+from rq_dashboard import RQDashboard
+from worker import Slack
 import json
 
 
-
 app = Flask(__name__)
+RQDashboard(app)
+
 slack = Slack()
 
 @app.route("/")
