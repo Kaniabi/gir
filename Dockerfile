@@ -1,17 +1,18 @@
 # Using phusion baseimage as explained here:
 #   https://github.com/phusion/baseimage-docker
 FROM phusion/baseimage:0.9.16
-MAINTAINER Alexandre Andrade <kaniabi@gmail.com>
+MAINTAINER Alexandre Andrade <ama@esss.com.br>
 
 # Install dependencies
 RUN apt-get update
-RUN apt-get install -y nginx
-RUN apt-get install -y redis-server
-RUN apt-get install -y supervisor
-RUN apt-get install -y python3-pip
+RUN apt-get install -y nginx redis-server supervisor python3-pip git
 
 # Update working directories
 ADD ./config /config
+
+# Configure python-rq
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8
 
 # Install application requirements (python3)
 RUN pip3 install -r /config/requirements.txt
@@ -26,10 +27,6 @@ RUN echo "\ndaemon off;" >> /etc/nginx/nginx.conf
 # . Replace default site by nginx.conf
 RUN rm /etc/nginx/sites-enabled/default
 RUN ln -s /config/nginx.conf /etc/nginx/sites-enabled/
-
-# Configure python-rq
-ENV LC_ALL=C.UTF-8
-ENV LANG=C.UTF-8
 
 # Configure supervisor
 RUN ln -s /config/supervisor.conf /etc/supervisor/conf.d/

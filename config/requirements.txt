@@ -4,6 +4,6 @@ jsonpath-rw
 redis
 requests
 rq
-slackclient
+git+https://github.com/ESSS/python-slackclient.git@python3
 pytest
 rq-dashboard

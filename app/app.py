@@ -59,7 +59,7 @@ def stash():
     return HandleIt(message, icon_url, username)
 
 
-@app.route("/jira", methods=['POST'])               
+@app.route("/jira", methods=['POST'])
 def jira():
     message = '<`issue.self`|`issue.key`>: `issue.fields.summary` [@`user.name`]'
     icon_url = 'https://developer.atlassian.com/imgs/jira.png'

@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 def SendMessage(message, icon_url=None, username=None, room=None):
     from slackclient import SlackClient
     import getpass
+    import os
     import socket
 
     TOKEN = os.environ.get('SLACK_TOKEN')
