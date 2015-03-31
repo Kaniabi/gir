@@ -8,14 +8,14 @@ RUN apt-get update
 RUN apt-get install -y nginx redis-server supervisor python3-pip git
 
 # Update working directories
-ADD ./config /config
+ADD ./config /gir/config
 
 # Configure python-rq
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
 
 # Install application requirements (python3)
-RUN pip3 install -r /config/requirements.txt
+RUN pip3 install -r /gir/config/requirements.txt
 
 # Configure redis-server
 # . No daemon since we're using supervisord
@@ -26,13 +26,14 @@ RUN sed -i 's/^\(daemonize\s*\)yes\s*$/\1no/g' /etc/redis/redis.conf
 RUN echo "\ndaemon off;" >> /etc/nginx/nginx.conf
 # . Replace default site by nginx.conf
 RUN rm /etc/nginx/sites-enabled/default
-RUN ln -s /config/nginx.conf /etc/nginx/sites-enabled/
+RUN ln -s /gir/config/nginx.conf /etc/nginx/sites-enabled/
 
 # Configure supervisor
-RUN ln -s /config/supervisor.conf /etc/supervisor/conf.d/
+RUN ln -s /gir/config/supervisor.conf /etc/supervisor/conf.d/
 
-# Add app last to easy changes in the code
-ADD ./app /app
+# Add these last to avoid unnecessary changes in the container
+ADD ./app /gir/app
+ADD ./static /gir/static
 
 EXPOSE 80
 CMD ["supervisord", "-n"]
