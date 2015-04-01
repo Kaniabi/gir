@@ -94,6 +94,9 @@ def _SlackMessage(message, room=DEFAULT_ROOM):
         data=json.dumps(data),
         headers=headers
     )
+    print '>' * 80
+    print r.text
+    print '>' * 80
     return r
 
 

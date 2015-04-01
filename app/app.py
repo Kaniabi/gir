@@ -4,9 +4,12 @@ from jsonsub import JsonSub, Remapping
 from rq_dashboard import RQDashboard
 from worker import Slack
 import json
+import os
 
 
 app = Flask(__name__)
+app.debug = True
+
 RQDashboard(app)
 
 slack = Slack()
@@ -74,7 +77,7 @@ class Handler(object):
         # Check Remapping function for more details.
         # Example:
         #   We use a different emoji depending on the combination of a build (jenkins) phase and status.
-        for i_key, i_mapping in remapping.iteritems():
+        for i_key, i_mapping in remapping.items():
             data[i_key] = Remapping(i_mapping, data)
 
         # Exits without sending the message to Slack under some conditions.
@@ -97,7 +100,7 @@ def index():
     return "Hello, from GIR!"
 
 
-for i_route, i_config in CONFIG.iteritems():
+for i_route, i_config in CONFIG.items():
     handler = Handler(i_config)
     app.add_url_rule('/' + i_route, i_route, handler, methods=['POST'])
 
