@@ -2,8 +2,8 @@ from __future__ import unicode_literals
 from flask import Flask, request
 from jsonsub import JsonSub, Remapping
 from rq_dashboard import RQDashboard
+from flask_debug import Debug
 from worker import Slack
-import json
 import os
 
 
@@ -11,6 +11,7 @@ app = Flask(__name__)
 app.debug = True
 
 RQDashboard(app)
+Debug(app)
 
 slack = Slack()
 
@@ -71,7 +72,7 @@ class Handler(object):
 
     @classmethod
     def HandleIt(cls, message, icon_url, username, remapping={}, early_exit=[]):
-        data = json.loads(request.data)
+        data = request.json
 
         # Create new values on data based on remapping dictionary.
         # Check Remapping function for more details.

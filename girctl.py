@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from clikit.app import App
 import getpass
 import socket
@@ -72,7 +73,7 @@ def Run(console_, name='gir'):
     return retcode
 
 
-def _SlackMessage(message, room=DEFAULT_ROOM):
+def _SlackMessage(message, room=DEFAULT_ROOM, port=5180):
     import json
     import requests
 
@@ -86,12 +87,12 @@ def _SlackMessage(message, room=DEFAULT_ROOM):
         'room' : room,
     }
     headers = {
-        'Content-type': 'application/json',
+        'Content-type': 'application/json; charset=utf-8',
         'Accept': 'text/plain'
     }
     r = requests.post(
-        'http://localhost:5180/message',
-        data=json.dumps(data),
+        'http://localhost:%(port)s/message' % locals(),
+        data=json.dumps(data).decode('UTF-8'),
         headers=headers
     )
     print '>' * 80
