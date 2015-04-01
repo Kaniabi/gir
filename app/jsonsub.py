@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+import six
 import re
 
 
@@ -22,7 +23,7 @@ def JsonSub(value, data):
         from jsonpath_rw import parse
         jsonpath_expr = parse(jsonpath_expr)
         matches = jsonpath_expr.find(data)
-        return '|'.join([unicode(i.value) for i in matches])
+        return '|'.join([six.text_type(i.value) for i in matches])
 
     def Replacer(matchobj):
         return Evaluator(matchobj.group(1), data)
@@ -32,7 +33,7 @@ def JsonSub(value, data):
             return None
         return __evaluate_regex.sub(Replacer, s)
 
-    assert not isinstance(data, unicode), "Expecting a python structure not a json string."
+    assert not isinstance(data, six.string_types), "Expecting a python structure not a json string."
 
     if type(value) == list:
         return map(Sub, value)
