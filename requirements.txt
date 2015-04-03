@@ -9,3 +9,4 @@ pytest
 rq-dashboard
 six
 Flask-Debug
+datatree

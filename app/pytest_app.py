@@ -1,19 +1,20 @@
 from __future__ import unicode_literals
 from app import app
-from xml_factory import XmlFactory
+from datatree import Tree
 import mock
-
 
 
 @mock.patch('worker.Slack.Message')
 def test_message(mock_message):
+    data = Tree()
+    data.message('alpha')
+    data.user('bravo')
+    data.host('charlie')
+    data.room('delta')
+    data = data.render(renderer='json').decode('ascii')
+
     tester = app.test_client()
-    data = XmlFactory('')
-    data['message'] = 'alpha'
-    data['user'] = 'bravo'
-    data['host'] = 'charlie'
-    data['room'] = 'delta'
-    response = tester.post('/message', data=data.AsJson())
+    response = tester.post('/message', data=data, headers={'Content-type': 'application/json'})
     assert response.status_code == 200
     assert response.content_type == 'text/html; charset=utf-8'
     mock_message.assert_called_once_with(
@@ -25,13 +26,18 @@ def test_message(mock_message):
 
 @mock.patch('worker.Slack.Message')
 def test_jira(mock_message):
+    data = Tree()
+    with data.issue() as issue:
+        issue.key('alpha')
+        issue.self('bravo')
+        with issue.fields() as fields:
+            fields.summary('charlie')
+    with data.user() as user:
+        user.name('delta')
+    data = data.render('json')
+
     tester = app.test_client()
-    data = XmlFactory('')
-    data['issue/key'] = 'alpha'
-    data['issue/self'] = 'bravo'
-    data['issue/fields/summary'] = 'charlie'
-    data['user/name'] = 'delta'
-    response = tester.post('/jira', data=data.AsJson())
+    response = tester.post('/jira', data=data, headers={'Content-type': 'application/json'})
     assert response.status_code == 200
     assert response.content_type == 'text/html; charset=utf-8'
     mock_message.assert_called_once_with(
@@ -43,10 +49,12 @@ def test_jira(mock_message):
 
 @mock.patch('worker.Slack.Message')
 def test_stash(mock_message):
+    data = Tree()
+    data.repository().slug('alpha')
+    data = data.render('json')
+
     tester = app.test_client()
-    data = XmlFactory('')
-    data['repository/slug'] = 'alpha'
-    response = tester.post('/stash', data=data.AsJson())
+    response = tester.post('/stash', data=data, headers={'Content-type': 'application/json'})
     assert response.status_code == 200
     assert response.content_type == 'text/html; charset=utf-8'
     mock_message.assert_called_once_with(
@@ -57,16 +65,23 @@ def test_stash(mock_message):
 
 
 def test_jenkins():
+
+    def CreatePostData(phase='FINALIZED', status='SUCCESS'):
+        data = Tree()
+        data.url('alpha')
+        data.name('bravo')
+        with data.build() as build:
+            build.full_url('charlie')
+            build.number('999')
+            build.phase(phase)
+            build.status(status)
+        return data.render('json')
+
+    post_data = CreatePostData()
+
     tester = app.test_client()
-    data = XmlFactory('')
-    data['url'] = 'alpha'
-    data['name'] = 'bravo'
-    data['build/full_url'] = 'charlie'
-    data['build/number'] = '999'
-    data['build/phase'] = 'FINALIZED'
-    data['build/status'] = 'SUCCESS'
     with mock.patch('worker.Slack.Message') as mock_message:
-        response = tester.post('/jenkins', data=data.AsJson())
+        response = tester.post('/jenkins', data=post_data, headers={'Content-type': 'application/json'})
         assert response.status_code == 200
         assert response.content_type == 'text/html; charset=utf-8'
         mock_message.assert_called_once_with(
@@ -75,9 +90,10 @@ def test_jenkins():
             'Jenkins',
         )
 
-    data['build/status'] = 'FAILURE'
+    post_data = CreatePostData(status='FAILURE')
+
     with mock.patch('worker.Slack.Message') as mock_message:
-        response = tester.post('/jenkins', data=data.AsJson())
+        response = tester.post('/jenkins', data=post_data, headers={'Content-type': 'application/json'})
         assert response.status_code == 200
         assert response.content_type == 'text/html; charset=utf-8'
         mock_message.assert_called_once_with(
@@ -86,9 +102,10 @@ def test_jenkins():
             'Jenkins',
         )
 
-    data['build/status'] = 'ABORTED'
+    post_data = CreatePostData(status='ABORTED')
+
     with mock.patch('worker.Slack.Message') as mock_message:
-        response = tester.post('/jenkins', data=data.AsJson())
+        response = tester.post('/jenkins', data=post_data, headers={'Content-type': 'application/json'})
         assert response.status_code == 200
         assert response.content_type == 'text/html; charset=utf-8'
         mock_message.assert_called_once_with(
@@ -97,9 +114,10 @@ def test_jenkins():
             'Jenkins',
         )
 
-    data['build/status'] = 'UNSTABLE'
+    post_data = CreatePostData(status='UNSTABLE')
+
     with mock.patch('worker.Slack.Message') as mock_message:
-        response = tester.post('/jenkins', data=data.AsJson())
+        response = tester.post('/jenkins', data=post_data, headers={'Content-type': 'application/json'})
         assert response.status_code == 200
         assert response.content_type == 'text/html; charset=utf-8'
         mock_message.assert_called_once_with(
