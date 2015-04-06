@@ -9,4 +9,5 @@ pytest
 rq-dashboard
 six
 Flask-Debug
-datatree
+git+https://github.com/ESSS/datatree.git@esss-master
+
