@@ -5,9 +5,10 @@ redis
 requests
 rq
 git+https://github.com/ESSS/python-slackclient.git@python3
-pytest
 rq-dashboard
 six
 Flask-Debug
-git+https://github.com/ESSS/datatree.git@esss-master
 
+#Test dependencies
+pytest
+git+https://github.com/ESSS/datatree.git@esss-master

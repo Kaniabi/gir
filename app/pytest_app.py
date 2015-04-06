@@ -11,7 +11,7 @@ def test_message(mock_message):
     data.user('bravo')
     data.host('charlie')
     data.room('delta')
-    data = data.render(renderer='json').decode('ascii')
+    data = data.render('json')
 
     tester = app.test_client()
     response = tester.post('/message', data=data, headers={'Content-type': 'application/json'})

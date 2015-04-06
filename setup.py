@@ -41,9 +41,7 @@ setup(
     #===============================================================================================
     author='Alexandre Motta de Andrade',
     author_email='ama@esss.com.br',
-
     url='https://github.com/Kaniabi/gir',
-
     license='LGPL v3+',
     description='XMl Factory is a simple XMl writer that uses dict syntax to write files.',
     keywords='gir slack stash jira jenkins chatbot chatops',
