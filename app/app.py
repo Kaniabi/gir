@@ -107,7 +107,7 @@ class Handler(object):
         params['s'] = str(size)
         if default is not None:
             params['d'] = default
-        result = result + urlencode()
+        result = result + urlencode(params)
         return result
 
 
