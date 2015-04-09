@@ -73,7 +73,7 @@ def Run(console_, name='gir'):
     return retcode
 
 
-def _SlackMessage(message, room=DEFAULT_ROOM, port=5180):
+def _SlackMessage(message, room=DEFAULT_ROOM, port=6000):
     import json
     import requests
 

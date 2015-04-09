@@ -19,17 +19,17 @@ CONFIG ={
     'stash' : dict(
         message = 'Commit on `repository.slug`',
         icon_url = 'https://developer.atlassian.com/imgs/stash.png',
-        username = 'Stash',
+        username = '`user`@esss.com.br',
     ),
     'jira' : dict(
         message = '<`issue.self`|`issue.key`>: `issue.fields.summary` [@`user.name`]',
         icon_url = 'https://developer.atlassian.com/imgs/jira.png',
-        username = 'Jira',
+        username = '`user.name`@esss.com.br',
     ),
     'message' : dict(
         message = '`message`',
         icon_url = 'http://static.tumblr.com/2qdysyt/AaTm73sce/gir_sitting.png',
-        username = '`user`@`host`',
+        username = '`user`@esss.com.br',
     ),
     'jenkins' : dict(
         message = 'Job `emoji` <https://eden.esss.com.br/jenkins/`url`|`name`> <`build.full_url`|#`build.number`>.',
@@ -90,10 +90,25 @@ class Handler(object):
         # Sends the message (using queue)
         message = JsonSub(message, data)
         username = JsonSub(username, data)
+        icon_url = cls.GravatarUrl(username, default=icon_url)
         slack.Message(message, icon_url, username)
 
         return 'OK'
 
+
+    @classmethod
+    def GravatarUrl(cls, email, size=42, default=None):
+        import hashlib
+        from six.moves.urllib.parse import urlencode
+
+        result = "http://www.gravatar.com/avatar/" + hashlib.md5(email.lower()).hexdigest() + "?"
+
+        params = dict()
+        params['s'] = str(size)
+        if default is not None:
+            params['d'] = default
+        result = result + urlencode()
+        return result
 
 
 @app.route("/")
