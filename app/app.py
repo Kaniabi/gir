@@ -101,7 +101,7 @@ class Handler(object):
         import hashlib
         from six.moves.urllib.parse import urlencode
 
-        result = "http://www.gravatar.com/avatar/" + hashlib.md5(email.lower()).hexdigest() + "?"
+        result = "http://www.gravatar.com/avatar/" + hashlib.md5(email.encode('ascii').lower()).hexdigest() + "?"
 
         params = dict()
         params['s'] = str(size)
