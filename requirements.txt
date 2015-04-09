@@ -11,4 +11,5 @@ Flask-Debug
 
 #Test dependencies
 pytest
+mock
 git+https://github.com/ESSS/datatree.git@esss-master

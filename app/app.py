@@ -99,14 +99,15 @@ class Handler(object):
     @classmethod
     def GravatarUrl(cls, email, size=42, default=None):
         import hashlib
+        from collections import OrderedDict
         from six.moves.urllib.parse import urlencode
 
         result = "http://www.gravatar.com/avatar/" + hashlib.md5(email.encode('ascii').lower()).hexdigest() + "?"
 
-        params = dict()
-        params['s'] = str(size)
+        params = OrderedDict()
         if default is not None:
             params['d'] = default
+        params['s'] = str(size)
         result = result + urlencode(params)
         return result
 

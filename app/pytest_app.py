@@ -4,6 +4,7 @@ from datatree import Tree
 import mock
 
 
+
 @mock.patch('worker.Slack.Message')
 def test_message(mock_message):
     data = Tree()
@@ -19,8 +20,8 @@ def test_message(mock_message):
     assert response.content_type == 'text/html; charset=utf-8'
     mock_message.assert_called_once_with(
         'alpha',
-        'http://static.tumblr.com/2qdysyt/AaTm73sce/gir_sitting.png',
-        'bravo@charlie'
+        'http://www.gravatar.com/avatar/3a1d8ffc9b5c06a8f1f4752aa8b5f59f?d=http%3A%2F%2Fstatic.tumblr.com%2F2qdysyt%2FAaTm73sce%2Fgir_sitting.png&s=42',
+        'bravo@esss.com.br'
     )
 
 
@@ -42,8 +43,8 @@ def test_jira(mock_message):
     assert response.content_type == 'text/html; charset=utf-8'
     mock_message.assert_called_once_with(
         '<bravo|alpha>: charlie [@delta]',
-        'https://developer.atlassian.com/imgs/jira.png',
-        'Jira',
+        'http://www.gravatar.com/avatar/014dadff6796603f84e16b2937b18fd3?d=https%3A%2F%2Fdeveloper.atlassian.com%2Fimgs%2Fjira.png&s=42',
+        'delta@esss.com.br',
     )
 
 
@@ -51,6 +52,7 @@ def test_jira(mock_message):
 def test_stash(mock_message):
     data = Tree()
     data.repository().slug('alpha')
+    data.user('bravo')
     data = data.render('json')
 
     tester = app.test_client()
@@ -59,8 +61,8 @@ def test_stash(mock_message):
     assert response.content_type == 'text/html; charset=utf-8'
     mock_message.assert_called_once_with(
         'Commit on alpha',
-        'https://developer.atlassian.com/imgs/stash.png',
-        'Stash',
+        'http://www.gravatar.com/avatar/3a1d8ffc9b5c06a8f1f4752aa8b5f59f?d=https%3A%2F%2Fdeveloper.atlassian.com%2Fimgs%2Fstash.png&s=42',
+        'bravo@esss.com.br',
     )
 
 
@@ -86,7 +88,7 @@ def test_jenkins():
         assert response.content_type == 'text/html; charset=utf-8'
         mock_message.assert_called_once_with(
             'Job :white_check_mark: <https://eden.esss.com.br/jenkins/alpha|bravo> <charlie|#999>.',
-            'https://slack.global.ssl.fastly.net/20653/img/services/jenkins-ci_48.png',
+            'http://www.gravatar.com/avatar/ab63a76362c3972ac83d5cb8830fdb51?d=https%3A%2F%2Fslack.global.ssl.fastly.net%2F20653%2Fimg%2Fservices%2Fjenkins-ci_48.png&s=42',
             'Jenkins',
         )
 
@@ -98,7 +100,7 @@ def test_jenkins():
         assert response.content_type == 'text/html; charset=utf-8'
         mock_message.assert_called_once_with(
             'Job :no_entry: <https://eden.esss.com.br/jenkins/alpha|bravo> <charlie|#999>.',
-            'https://slack.global.ssl.fastly.net/20653/img/services/jenkins-ci_48.png',
+            'http://www.gravatar.com/avatar/ab63a76362c3972ac83d5cb8830fdb51?d=https%3A%2F%2Fslack.global.ssl.fastly.net%2F20653%2Fimg%2Fservices%2Fjenkins-ci_48.png&s=42',
             'Jenkins',
         )
 
@@ -110,7 +112,7 @@ def test_jenkins():
         assert response.content_type == 'text/html; charset=utf-8'
         mock_message.assert_called_once_with(
             'Job :warning: <https://eden.esss.com.br/jenkins/alpha|bravo> <charlie|#999>.',
-            'https://slack.global.ssl.fastly.net/20653/img/services/jenkins-ci_48.png',
+            'http://www.gravatar.com/avatar/ab63a76362c3972ac83d5cb8830fdb51?d=https%3A%2F%2Fslack.global.ssl.fastly.net%2F20653%2Fimg%2Fservices%2Fjenkins-ci_48.png&s=42',
             'Jenkins',
         )
 
@@ -122,6 +124,6 @@ def test_jenkins():
         assert response.content_type == 'text/html; charset=utf-8'
         mock_message.assert_called_once_with(
             'Job :warning: <https://eden.esss.com.br/jenkins/alpha|bravo> <charlie|#999>.',
-            'https://slack.global.ssl.fastly.net/20653/img/services/jenkins-ci_48.png',
+            'http://www.gravatar.com/avatar/ab63a76362c3972ac83d5cb8830fdb51?d=https%3A%2F%2Fslack.global.ssl.fastly.net%2F20653%2Fimg%2Fservices%2Fjenkins-ci_48.png&s=42',
             'Jenkins',
         )
