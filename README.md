@@ -1,3 +1,9 @@
+[![Travis](https://img.shields.io/travis/Kaniabi/gir.svg)](https://travis-ci.org/Kaniabi/gir)
+[![CircleCi](https://img.shields.io/circleci/project/Kaniabi/gir.svg)](https://circleci.com/gh/Kaniabi/gir)
+[![Coveralls](https://img.shields.io/coveralls/Kaniabi/gir.svg)](https://coveralls.io/r/Kaniabi/gir)
+[![Gemnasium](https://img.shields.io/gemnasium/Kaniabi/gir.svg)](https://gemnasium.com/Kaniabi/gir)
+Dockerhub(https://registry.hub.docker.com/u/kaniabi/gir)
+
 # gir
 Customized slack (www.slack.com) messages from "any" (jenkins, stash, jira) web-hooks.
 
