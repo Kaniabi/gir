@@ -30,8 +30,28 @@ setup(
     version='0.1',
 
     packages=find_packages(exclude=['tests']),
-    install_requires=['six'],
-    tests_require=['pytest'],
+    install_requires=[
+        # Portability (python 2 and 3)
+        'six',
+        # Code
+        'requests',
+        'jsonpath-rw',
+        'rq',
+        'redis',
+        # App framework
+        'flask',
+        'uwsgi',
+        # python-slackclient: Working on python3
+        'git+https://github.com/ESSS/python-slackclient.git@python3',
+        # Apps
+        'Flask-Debug',
+        'rq-dashboard',
+    ],
+    tests_require=[
+        'pytest',
+        'mock',
+        'git+https://github.com/ESSS/datatree.git@esss-master',
+    ],
 
     cmdclass = {'test': PyTest},
 
