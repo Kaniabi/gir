@@ -73,7 +73,7 @@ def Run(console_, name='gir'):
     return retcode
 
 
-def _SlackMessage(message, room=DEFAULT_ROOM, port=6000):
+def _SlackMessage(message, room=DEFAULT_ROOM, host='188.226.245.90', port=80):
     import json
     import requests
 
@@ -91,7 +91,7 @@ def _SlackMessage(message, room=DEFAULT_ROOM, port=6000):
         'Accept': 'text/plain'
     }
     r = requests.post(
-        'http://localhost:%(port)s/message' % locals(),
+        'http://%(host)s:%(port)s/message' % locals(),
         data=json.dumps(data).decode('UTF-8'),
         headers=headers
     )
