@@ -41,8 +41,8 @@ setup(
         # App framework
         'flask',
         'uwsgi',
-        # python-slackclient: Working on python3
-        'git+https://github.com/ESSS/python-slackclient.git@python3',
+        # TODO: Find out how to use github urls on setup.py
+        # 'git+https://github.com/ESSS/python-slackclient.git@python3',
         # Apps
         'Flask-Debug',
         'rq-dashboard',
@@ -50,7 +50,8 @@ setup(
     tests_require=[
         'pytest',
         'mock',
-        'git+https://github.com/ESSS/datatree.git@esss-master',
+        # TODO: Find out how to use github urls on setup.py
+        # 'git+https://github.com/ESSS/datatree.git@esss-master',
     ],
 
     cmdclass = {'test': PyTest},
