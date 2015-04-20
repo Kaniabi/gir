@@ -20,3 +20,6 @@ deployment:
     commands:
       - $DEPLOY
 
+notify:
+  webhooks:
+    - url: http://188.226.245.90/circleci

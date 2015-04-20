@@ -3,7 +3,7 @@ from flask import Flask, request
 from jsonsub import JsonSub, Remapping
 from rq_dashboard import RQDashboard
 from flask_debug import Debug
-from worker import Slack
+from worker import Slack, StaticResource
 import os
 
 
@@ -15,25 +15,36 @@ Debug(app)
 
 slack = Slack()
 
+
 CONFIG ={
     'stash' : dict(
         message = 'Commit on `repository.slug`',
-        icon_url = 'https://developer.atlassian.com/imgs/stash.png',
+        icon_url = StaticResource('stash.png'),
         username = '`user`@esss.com.br',
     ),
     'jira' : dict(
-        message = '<`issue.self`|`issue.key`>: `issue.fields.summary` [@`user.name`]',
-        icon_url = 'https://developer.atlassian.com/imgs/jira.png',
+        message = '<`issue.self`|`issue.key`>: `issue.fields.summary`',
+        icon_url = StaticResource('jira.png'),
         username = '`user.name`@esss.com.br',
     ),
     'message' : dict(
         message = '`message`',
-        icon_url = 'http://static.tumblr.com/2qdysyt/AaTm73sce/gir_sitting.png',
+        icon_url = StaticResource('gir_sitting.png'),
         username = '`user`@esss.com.br',
+    ),
+    'circleci' : dict(
+        message = 'Job <`payload.build_url`|`payload.vcs_url`#`payload.branch`>',
+        icon_url = StaticResource('circle.png'),
+        username = 'CircleCI',
+    ),
+    'github' : dict(
+        message = 'Commit on <`repository.url`|`repository.name`>',
+        icon_url = StaticResource('github.png'),
+        username = '`pusher.email`',
     ),
     'jenkins' : dict(
         message = 'Job `emoji` <https://eden.esss.com.br/jenkins/`url`|`name`> <`build.full_url`|#`build.number`>.',
-        icon_url = 'https://slack.global.ssl.fastly.net/20653/img/services/jenkins-ci_48.png',
+        icon_url = StaticResource('jenkins.png'),
         username = 'Jenkins',
         remapping = {
             'emoji' : {
@@ -115,6 +126,16 @@ class Handler(object):
 @app.route("/")
 def index():
     return "Hello, from GIR!"
+
+
+@app.route("/webhook/<config_id>", methods=['POST'])
+def webhook(config_id):
+    #return 'Webhook with config_id="%s"' % config_id
+    config = CONFIG.get(config_id)
+    if config is None:
+        return 'Invalid config_id: "%s".' % config_id
+    handler = Handler(config)
+    return handler()
 
 
 for i_route, i_config in CONFIG.items():

@@ -1,4 +1,3 @@
-[![Travis](https://img.shields.io/travis/Kaniabi/gir.svg)](https://travis-ci.org/Kaniabi/gir)
 [![CircleCi](https://img.shields.io/circleci/project/Kaniabi/gir.svg)](https://circleci.com/gh/Kaniabi/gir)
 [![Coveralls](https://img.shields.io/coveralls/Kaniabi/gir.svg)](https://coveralls.io/r/Kaniabi/gir)
 [![Gemnasium](https://img.shields.io/gemnasium/Kaniabi/gir.svg)](https://gemnasium.com/Kaniabi/gir)
@@ -19,13 +18,6 @@ The idea is to build a flask application inside an docker container and implemen
 This project initial layout was inspired in the Real Python Tutorial:
 * [realpython/flask-docker-workflow](https://github.com/realpython/flask-docker-workflow)
 
-## Usage
-
-```
-$ git clone https://github.com/Kaniabi/gir.git
-$ cd gir
-$ vagrant up
-```
 
 ## Technologies
 
@@ -37,4 +29,15 @@ This project is a experiment on many "new" (for me) technologies, including but 
 * uwsgi
 * supervisord
 * flask
+
+## Services
+
+Some related services.
+
+* github.com
+* hub.docker.com
+* www.tutum.co
+* www.digitalocean.com
+* circleci.com
+
 

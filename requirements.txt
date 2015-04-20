@@ -1,4 +1,4 @@
-uwsgi
+uwsgi  # Linux only!
 flask
 jsonpath-rw
 redis

@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+import json
 from app import app
 from datatree import Tree
 import mock
@@ -20,7 +21,7 @@ def test_message(mock_message):
     assert response.content_type == 'text/html; charset=utf-8'
     mock_message.assert_called_once_with(
         'alpha',
-        'http://www.gravatar.com/avatar/3a1d8ffc9b5c06a8f1f4752aa8b5f59f?d=http%3A%2F%2Fstatic.tumblr.com%2F2qdysyt%2FAaTm73sce%2Fgir_sitting.png&s=42',
+        'http://www.gravatar.com/avatar/3a1d8ffc9b5c06a8f1f4752aa8b5f59f?d=http%3A%2F%2F188.226.245.90%2Fstatic%2Fgir_sitting.png&s=42',
         'bravo@esss.com.br'
     )
 
@@ -34,7 +35,7 @@ def test_jira(mock_message):
         with issue.fields() as fields:
             fields.summary('charlie')
     with data.user() as user:
-        user.name('delta')
+        user.name('bravo')
     data = data.render('json')
 
     tester = app.test_client()
@@ -42,9 +43,9 @@ def test_jira(mock_message):
     assert response.status_code == 200
     assert response.content_type == 'text/html; charset=utf-8'
     mock_message.assert_called_once_with(
-        '<bravo|alpha>: charlie [@delta]',
-        'http://www.gravatar.com/avatar/014dadff6796603f84e16b2937b18fd3?d=https%3A%2F%2Fdeveloper.atlassian.com%2Fimgs%2Fjira.png&s=42',
-        'delta@esss.com.br',
+        '<bravo|alpha>: charlie',
+        'http://www.gravatar.com/avatar/3a1d8ffc9b5c06a8f1f4752aa8b5f59f?d=http%3A%2F%2F188.226.245.90%2Fstatic%2Fjira.png&s=42',
+        'bravo@esss.com.br',
     )
 
 
@@ -61,7 +62,7 @@ def test_stash(mock_message):
     assert response.content_type == 'text/html; charset=utf-8'
     mock_message.assert_called_once_with(
         'Commit on alpha',
-        'http://www.gravatar.com/avatar/3a1d8ffc9b5c06a8f1f4752aa8b5f59f?d=https%3A%2F%2Fdeveloper.atlassian.com%2Fimgs%2Fstash.png&s=42',
+        'http://www.gravatar.com/avatar/3a1d8ffc9b5c06a8f1f4752aa8b5f59f?d=http%3A%2F%2F188.226.245.90%2Fstatic%2Fstash.png&s=42',
         'bravo@esss.com.br',
     )
 
@@ -88,7 +89,7 @@ def test_jenkins():
         assert response.content_type == 'text/html; charset=utf-8'
         mock_message.assert_called_once_with(
             'Job :white_check_mark: <https://eden.esss.com.br/jenkins/alpha|bravo> <charlie|#999>.',
-            'http://www.gravatar.com/avatar/ab63a76362c3972ac83d5cb8830fdb51?d=https%3A%2F%2Fslack.global.ssl.fastly.net%2F20653%2Fimg%2Fservices%2Fjenkins-ci_48.png&s=42',
+            'http://www.gravatar.com/avatar/ab63a76362c3972ac83d5cb8830fdb51?d=http%3A%2F%2F188.226.245.90%2Fstatic%2Fjenkins.png&s=42',
             'Jenkins',
         )
 
@@ -100,7 +101,7 @@ def test_jenkins():
         assert response.content_type == 'text/html; charset=utf-8'
         mock_message.assert_called_once_with(
             'Job :no_entry: <https://eden.esss.com.br/jenkins/alpha|bravo> <charlie|#999>.',
-            'http://www.gravatar.com/avatar/ab63a76362c3972ac83d5cb8830fdb51?d=https%3A%2F%2Fslack.global.ssl.fastly.net%2F20653%2Fimg%2Fservices%2Fjenkins-ci_48.png&s=42',
+            'http://www.gravatar.com/avatar/ab63a76362c3972ac83d5cb8830fdb51?d=http%3A%2F%2F188.226.245.90%2Fstatic%2Fjenkins.png&s=42',
             'Jenkins',
         )
 
@@ -112,7 +113,7 @@ def test_jenkins():
         assert response.content_type == 'text/html; charset=utf-8'
         mock_message.assert_called_once_with(
             'Job :warning: <https://eden.esss.com.br/jenkins/alpha|bravo> <charlie|#999>.',
-            'http://www.gravatar.com/avatar/ab63a76362c3972ac83d5cb8830fdb51?d=https%3A%2F%2Fslack.global.ssl.fastly.net%2F20653%2Fimg%2Fservices%2Fjenkins-ci_48.png&s=42',
+            'http://www.gravatar.com/avatar/ab63a76362c3972ac83d5cb8830fdb51?d=http%3A%2F%2F188.226.245.90%2Fstatic%2Fjenkins.png&s=42',
             'Jenkins',
         )
 
@@ -124,6 +125,63 @@ def test_jenkins():
         assert response.content_type == 'text/html; charset=utf-8'
         mock_message.assert_called_once_with(
             'Job :warning: <https://eden.esss.com.br/jenkins/alpha|bravo> <charlie|#999>.',
-            'http://www.gravatar.com/avatar/ab63a76362c3972ac83d5cb8830fdb51?d=https%3A%2F%2Fslack.global.ssl.fastly.net%2F20653%2Fimg%2Fservices%2Fjenkins-ci_48.png&s=42',
+            'http://www.gravatar.com/avatar/ab63a76362c3972ac83d5cb8830fdb51?d=http%3A%2F%2F188.226.245.90%2Fstatic%2Fjenkins.png&s=42',
             'Jenkins',
         )
+
+
+@mock.patch('worker.Slack.Message')
+def test_webhook_github(mock_message):
+    data = {
+        'repository' : {
+            'url' : 'http://github.com/kaniabi/gir',
+            'name' : 'gir',
+        },
+        'pusher' : {
+            'email' : 'kaniabi@gmail.com',
+        },
+    }
+    data = json.dumps(data)
+
+    tester = app.test_client()
+    response = tester.post('/webhook/github', data=data, headers={'Content-type': 'application/json'})
+    assert response.status_code == 200
+    assert response.content_type == 'text/html; charset=utf-8'
+    mock_message.assert_called_once_with(
+        'Commit on <http://github.com/kaniabi/gir|gir>',
+        'http://www.gravatar.com/avatar/8101da6577a821fb6f95098de8f1a293?d=http%3A%2F%2F188.226.245.90%2Fstatic%2Fgithub.png&s=42',
+        'kaniabi@gmail.com',
+    )
+
+
+@mock.patch('worker.Slack.Message')
+def test_webhook_circleci(mock_message):
+    data = {
+        'payload' : {
+            'build_url' : 'alpha',
+            'vcs_url' : 'bravo',
+            'branch' : 'charlie',
+        },
+    }
+    data = json.dumps(data)
+
+    tester = app.test_client()
+    response = tester.post('/webhook/circleci', data=data, headers={'Content-type': 'application/json'})
+    assert response.status_code == 200
+    assert response.content_type == 'text/html; charset=utf-8'
+    mock_message.assert_called_once_with(
+        'Job <alpha|bravo#charlie>',
+        'http://www.gravatar.com/avatar/afbc9a4d12e9481a8b1e68912685c436?d=http%3A%2F%2F188.226.245.90%2Fstatic%2Fcircle.png&s=42',
+        'CircleCI',
+    )
+
+
+def test_webhook_error():
+    data = {}
+    data = json.dumps(data)
+
+    tester = app.test_client()
+    response = tester.post('/webhook/error', data=data, headers={'Content-type': 'application/json'})
+    assert response.status_code == 200
+    assert response.content_type == 'text/html; charset=utf-8'
+    assert response.data == b'Invalid config_id: "error".'
