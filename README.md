@@ -34,10 +34,12 @@ This project is a experiment on many "new" (for me) technologies, including but 
 
 Some related services.
 
-* github.com
-* hub.docker.com
-* www.tutum.co
-* www.digitalocean.com
-* circleci.com
+* github.com - Host the source code.
+* quai.co - Builds the docker image.
+* www.tutum.co - Deploys the docker image.
+* www.digitalocean.com - Hosts the site.
+
+* hub.docker.com (deprecated)
+* circleci.com (deprecated)
 
 
