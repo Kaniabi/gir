@@ -18,9 +18,9 @@ slack = Slack()
 
 CONFIG ={
     'stash' : dict(
-        message = 'Commit on `repository.slug`',
+        message = '`repository.slug`#`refChanges[0].refId`: `changesets.values[0].toCommit.displayId`: `changesets.values[0].toCommit.message`',
         icon_url = StaticResource('stash.png'),
-        username = '`user`@esss.com.br',
+        username = '`changesets.values[0].toCommit.author.emailAddress`',
     ),
     'jira' : dict(
         message = '<`issue.self`|`issue.key`>: `issue.fields.summary`',
@@ -38,7 +38,7 @@ CONFIG ={
         username = 'CircleCI',
     ),
     'github' : dict(
-        message = 'Commit on <`repository.url`|`repository.name`>',
+        message = 'Commit on <`repository.url`|`repository.full_name`>',
         icon_url = StaticResource('github.png'),
         username = '`pusher.email`',
     ),
