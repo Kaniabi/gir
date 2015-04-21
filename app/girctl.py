@@ -20,7 +20,7 @@ def Message(console_, room=DEFAULT_ROOM, *message):
     :param message: The message to send to slack.
     :param room: Defines the slack room to notify.
     '''
-    _SlackMessage(' '.join(message), room=room)
+    _SlackMessage(console_, ' '.join(message), room=room)
 
 
 @app
@@ -41,20 +41,26 @@ def Exec(console_, room=DEFAULT_ROOM, *cmd_line):
     else:
         message = ':warning: $ %(cmd_line)s' % locals()
 
-    r = _SlackMessage(message, room=room)
+    r = _SlackMessage(console_, message, room=room)
     console_.Print(r)
 
 
 @app
-def Build(console_, name='gir'):
+def FillDb(console_):
     '''
     '''
-    from ben10.execute import Execute2
-    output, retcode = Execute2(
-        'docker build --rm -t %(name)s:latest' % locals(),
-        pipe_stdout=False,
-    )
-    return retcode
+    from app import GirConfig
+
+    database = GirConfig.GetDatabase('http://188.226.245.90:5984')
+    if database is None:
+        console_.Print("Error: Can't connect to couchdb server.")
+        return 1
+
+    database['circleci'] = dict(
+            message = 'Job <`payload.build_url`|`payload.vcs_url`#`payload.branch`>',
+            icon_url = 'circle.png',
+            username = 'CircleCI',
+        )
 
 
 @app
@@ -73,7 +79,7 @@ def Run(console_, name='gir'):
     return retcode
 
 
-def _SlackMessage(message, room=DEFAULT_ROOM, host='188.226.245.90', port=80):
+def _SlackMessage(console_, message, room=DEFAULT_ROOM, host='188.226.245.90', port=80):
     import json
     import requests
 
@@ -95,9 +101,9 @@ def _SlackMessage(message, room=DEFAULT_ROOM, host='188.226.245.90', port=80):
         data=json.dumps(data).decode('UTF-8'),
         headers=headers
     )
-    print '>' * 80
-    print r.text
-    print '>' * 80
+    console_.Print('>' * 80)
+    console_.Print(r.text)
+    console_.Print('>' * 80)
     return r
 
 

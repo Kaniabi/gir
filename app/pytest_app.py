@@ -27,7 +27,7 @@ def test_message(mock_message):
 
 
 @mock.patch('worker.Slack.Message')
-def test_jira(mock_message):
+def test_webhook_jira(mock_message):
     data = Tree()
     with data.issue() as issue:
         issue.key('alpha')
@@ -39,7 +39,7 @@ def test_jira(mock_message):
     data = data.render('json')
 
     tester = app.test_client()
-    response = tester.post('/jira', data=data, headers={'Content-type': 'application/json'})
+    response = tester.post('/webhook/jira', data=data, headers={'Content-type': 'application/json'})
     assert response.status_code == 200
     assert response.content_type == 'text/html; charset=utf-8'
     mock_message.assert_called_once_with(
@@ -100,7 +100,7 @@ def test_webhook_stash(mock_message):
     )
 
 
-def test_jenkins():
+def test_webhook_jenkins():
 
     def CreatePostData(phase='FINALIZED', status='SUCCESS'):
         data = Tree()
@@ -117,7 +117,7 @@ def test_jenkins():
 
     tester = app.test_client()
     with mock.patch('worker.Slack.Message') as mock_message:
-        response = tester.post('/jenkins', data=post_data, headers={'Content-type': 'application/json'})
+        response = tester.post('/webhook/jenkins', data=post_data, headers={'Content-type': 'application/json'})
         assert response.status_code == 200
         assert response.content_type == 'text/html; charset=utf-8'
         mock_message.assert_called_once_with(
@@ -129,7 +129,7 @@ def test_jenkins():
     post_data = CreatePostData(status='FAILURE')
 
     with mock.patch('worker.Slack.Message') as mock_message:
-        response = tester.post('/jenkins', data=post_data, headers={'Content-type': 'application/json'})
+        response = tester.post('/webhook/jenkins', data=post_data, headers={'Content-type': 'application/json'})
         assert response.status_code == 200
         assert response.content_type == 'text/html; charset=utf-8'
         mock_message.assert_called_once_with(
@@ -141,7 +141,7 @@ def test_jenkins():
     post_data = CreatePostData(status='ABORTED')
 
     with mock.patch('worker.Slack.Message') as mock_message:
-        response = tester.post('/jenkins', data=post_data, headers={'Content-type': 'application/json'})
+        response = tester.post('/webhook/jenkins', data=post_data, headers={'Content-type': 'application/json'})
         assert response.status_code == 200
         assert response.content_type == 'text/html; charset=utf-8'
         mock_message.assert_called_once_with(
@@ -153,7 +153,7 @@ def test_jenkins():
     post_data = CreatePostData(status='UNSTABLE')
 
     with mock.patch('worker.Slack.Message') as mock_message:
-        response = tester.post('/jenkins', data=post_data, headers={'Content-type': 'application/json'})
+        response = tester.post('/webhook/jenkins', data=post_data, headers={'Content-type': 'application/json'})
         assert response.status_code == 200
         assert response.content_type == 'text/html; charset=utf-8'
         mock_message.assert_called_once_with(
