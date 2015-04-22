@@ -1,7 +1,7 @@
-[![CircleCi](https://img.shields.io/circleci/project/Kaniabi/gir.svg)](https://circleci.com/gh/Kaniabi/gir)
+[![Travis](https://img.shields.io/travis/Kaniabi/gir.svg)](https://circleci.com/gh/Kaniabi/gir)
 [![Coveralls](https://img.shields.io/coveralls/Kaniabi/gir.svg)](https://coveralls.io/r/Kaniabi/gir)
 [![Gemnasium](https://img.shields.io/gemnasium/Kaniabi/gir.svg)](https://gemnasium.com/Kaniabi/gir)
-[Dockerhub](https://registry.hub.docker.com/u/kaniabi/gir)
+[![Docker Repository on Quay.io](https://quay.io/repository/kaniabi/gir/status "Docker Repository on Quay.io")](https://quay.io/repository/kaniabi/gir)
 
 # gir
 Customized slack (www.slack.com) messages from "any" (jenkins, stash, jira) web-hooks.
@@ -35,7 +35,7 @@ This project is a experiment on many "new" (for me) technologies, including but 
 Some related services.
 
 * github.com - Host the source code.
-* quai.co - Builds the docker image.
+* quay.co - Builds the docker image.
 * www.tutum.co - Deploys the docker image.
 * www.digitalocean.com - Hosts the site.
 
