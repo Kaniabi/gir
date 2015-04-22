@@ -10,17 +10,18 @@ app = App('girctl')
 
 
 DEFAULT_ROOM = '#bos-ama'
-
+DEFAULT_HOST = '188.226.245.90'
+DEFAULT_PORT = 80
 
 @app
-def Message(console_, room=DEFAULT_ROOM, *message):
+def Message(console_, room=DEFAULT_ROOM, host=DEFAULT_HOST, port=DEFAULT_PORT, *message):
     '''
     Sends a message to slack.
 
     :param message: The message to send to slack.
     :param room: Defines the slack room to notify.
     '''
-    _SlackMessage(console_, ' '.join(message), room=room)
+    _SlackMessage(console_, ' '.join(message), room=room, host=host, port=port)
 
 
 @app
@@ -48,6 +49,7 @@ def Exec(console_, room=DEFAULT_ROOM, *cmd_line):
 @app
 def FillDb(console_):
     '''
+    DEVELOPMENT
     '''
     from app import GirConfig
 
@@ -61,6 +63,25 @@ def FillDb(console_):
             icon_url = 'circle.png',
             username = 'CircleCI',
         )
+
+@app
+def SendSample(console_, config_id, room=DEFAULT_ROOM, host=DEFAULT_HOST, port=DEFAULT_PORT, *message):
+    '''
+    DEVELOPMENT
+    '''
+    import os
+    from ben10.filesystem import GetFileContents
+
+    sample_filename = os.path.dirname(__file__) + '/../samples/' + config_id + '.json'
+    if not os.path.isfile(sample_filename):
+        console_.Print("Can't find sample file: %s" % sample_filename)
+        return 1
+
+    data = GetFileContents(sample_filename)
+
+    r = _SlackData(console_, '/webhook/%s' % config_id, data, room=room, host=host, port=port)
+
+    console_.Print(r)
 
 
 @app
@@ -79,10 +100,7 @@ def Run(console_, name='gir'):
     return retcode
 
 
-def _SlackMessage(console_, message, room=DEFAULT_ROOM, host='188.226.245.90', port=80):
-    import json
-    import requests
-
+def _SlackMessage(console_, message, room=DEFAULT_ROOM, host=DEFAULT_HOST, port=DEFAULT_PORT):
     USER = getpass.getuser()
     HOST = socket.gethostname()
 
@@ -92,13 +110,20 @@ def _SlackMessage(console_, message, room=DEFAULT_ROOM, host='188.226.245.90', p
         'host' : HOST,
         'room' : room,
     }
+    return _SlackData(console_, '/message', data, room=room, host=host, port=port)
+
+
+def _SlackData(console_, url, data, room=DEFAULT_ROOM, host=DEFAULT_HOST, port=DEFAULT_PORT):
+    import json
+    import requests
+
     headers = {
         'Content-type': 'application/json; charset=utf-8',
-        'Accept': 'text/plain'
+        'Accept': 'text/plain',
     }
     r = requests.post(
-        'http://%(host)s:%(port)s/message' % locals(),
-        data=json.dumps(data).decode('UTF-8'),
+        'http://%(host)s:%(port)s%(url)s' % locals(),
+        data=json.dumps(data),
         headers=headers
     )
     console_.Print('>' * 80)

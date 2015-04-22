@@ -119,7 +119,7 @@ class Handler(object):
     def HandleIt(cls, message, icon_url, username, remapping={}, early_exit=[]):
         from jsonsub import JsonSub, Remapping
 
-        data = request.json
+        data = request.get_json()
 
         # Create new values on data based on remapping dictionary.
         # Check Remapping function for more details.
@@ -128,7 +128,7 @@ class Handler(object):
         for i_key, i_mapping in remapping.items():
             data[i_key] = Remapping(i_mapping, data)
 
-        # Exits without sending the message to Slack under some conditions.
+        # Exits without sending the message to Slack under some conditions (early_exit).
         for i_expression, i_description, i_result in early_exit:
             i_expression = JsonSub(i_expression, data)
             if eval(i_expression):

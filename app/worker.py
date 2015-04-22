@@ -38,7 +38,11 @@ class Slack(object):
     def __init__(self):
         from redis import Redis
         from rq import Queue
-        self.__queue = Queue(connection=Redis())
+        import os
+        redis_server = os.environ.get("REDIS_SERVER", 'localhost')
+        redis_port = int(os.environ.get("REDIS_PORT", 6379))
+        redis_connection = Redis(redis_server, redis_port)
+        self.__queue = Queue(connection=redis_connection)
 
     def Message(self, message, icon_url=None, username=None, room=None):
         self.__queue.enqueue(SendMessage, message, icon_url, username, room)
