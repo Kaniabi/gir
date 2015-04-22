@@ -4,8 +4,8 @@ python:
     - "2.7"
     - "3.4"
 install:
-    - "pip install --use-wheel --use-mirrors -r requirements.txt"
-    - "pip install --use-wheel --use-mirrors coverage coveralls"
+    - "pip install --use-wheel -r requirements.txt"
+    - "pip install --use-wheel coverage coveralls"
 script:
     - "coverage run --source=app setup.py test"
 after_success:
