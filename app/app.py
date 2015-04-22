@@ -162,7 +162,10 @@ class Handler(object):
 
 @app.route("/")
 def index():
-    return render_template('index.html', name=name)
+    return render_template(
+        'index.html',
+        GIR_STATIC_URL=os.environ.get('GIR_STATIC_URL', 'http://188.226.245.90/static/')
+    )
 
 
 @app.route("/webhook/<config_id>", methods=['POST'])
