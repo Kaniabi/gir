@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 import json
-from app import app
+from girapp import app
 from datatree import Tree
 import mock
 
