@@ -1,4 +1,4 @@
-[![Travis](https://img.shields.io/travis/Kaniabi/gir.svg)](https://circleci.com/gh/Kaniabi/gir)
+[![Travis](https://img.shields.io/travis/Kaniabi/gir.svg)](https://travis-ci.org/Kaniabi/gir)
 [![Coveralls](https://img.shields.io/coveralls/Kaniabi/gir.svg)](https://coveralls.io/r/Kaniabi/gir)
 [![Gemnasium](https://img.shields.io/gemnasium/Kaniabi/gir.svg)](https://gemnasium.com/Kaniabi/gir)
 [![Docker Repository on Quay.io](https://quay.io/repository/kaniabi/gir/status "Docker Repository on Quay.io")](https://quay.io/repository/kaniabi/gir)
