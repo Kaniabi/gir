@@ -35,7 +35,7 @@ class Slack(object):
         from redis import Redis
 
         server, port = cls.REDIS_SERVER.split(':')
-        db = cls.REDIS_DB
+        db = cls.REDIS_DATABASE
         password = cls.REDIS_PASSWORD
         return Redis(host=server, port=port, db=db, password=password)
 
