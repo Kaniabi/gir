@@ -1,7 +1,6 @@
 from __future__ import unicode_literals
 import json
 from girapp import app, GirConfig
-from datatree import Tree
 import mock
 
 
@@ -110,15 +109,17 @@ def test_webhook_stash(mock_message):
 def test_webhook_jenkins():
 
     def CreatePostData(phase='FINALIZED', status='SUCCESS'):
-        data = Tree()
-        data.url('alpha')
-        data.name('bravo')
-        with data.build() as build:
-            build.full_url('charlie')
-            build.number('999')
-            build.phase(phase)
-            build.status(status)
-        return data.render('json')
+        data = {
+            'url' : 'alpha',
+            'name' : 'bravo',
+            'build' : {
+                'full_url' : 'charlie',
+                'number' : '999',
+                'phase' : phase,
+                'status' : status,
+            }
+        }
+        return json.dumps(data)
 
     post_data = CreatePostData()
 

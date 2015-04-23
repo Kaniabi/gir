@@ -1,25 +1,23 @@
 from __future__ import unicode_literals
 from flask import Flask, request, render_template
-from rq_dashboard import RQDashboard
-from flask_debug import Debug
 from worker import Slack
 
 
 
 def CreateApp(app_name, configfile=None):
     from flask.ext.appconfig import AppConfig
+    from rq_dashboard import RQDashboard
+    from flask_debug import Debug
 
     result = Flask(app_name)
     AppConfig(result, configfile)
+    RQDashboard(result)
+    Debug(result)
     return result
 
 
 APP_NAME = 'gir'
 app = CreateApp(APP_NAME)
-app.debug = True
-
-RQDashboard(app)
-Debug(app)
 
 Slack.SLACK_TOKEN = app.config['SLACK_TOKEN']
 Slack.SLACK_USER = app.config['SLACK_USER']

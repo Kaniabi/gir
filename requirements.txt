@@ -4,13 +4,12 @@ jsonpath-rw
 redis
 requests
 rq
-git+https://github.com/ESSS/python-slackclient.git@python3
+git+https://github.com/slackhq/python-slackclient.git@39de60050e  # Python3 support
 rq-dashboard
 six
 Flask-Debug
 flask-appconfig
 
-#Test dependencies
+# Test dependencies
 pytest
 mock
-git+https://github.com/ESSS/datatree.git@esss-master
