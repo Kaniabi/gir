@@ -1,36 +1,72 @@
 from __future__ import unicode_literals
-from flask import Flask, request, render_template
-from worker import Slack
+from flask.ext.rq import job
 
 
 
 def CreateApp(configfile=None):
+    from flask import Flask
     from flask.ext.appconfig import AppConfig
     from rq_dashboard import RQDashboard
     from flask_debug import Debug
+    from flask.ext.rq import RQ
 
     result = Flask(__name__)
     result.debug = True
     AppConfig(result, default_settings="default_config", configfile=configfile)
     RQDashboard(result)
     Debug(result)
+    RQ(result)
     return result
 
 
 app = CreateApp()
 
-Slack.SLACK_TOKEN = app.config['SLACK_TOKEN']
-Slack.SLACK_USER = app.config['SLACK_USER']
-Slack.SLACK_HOST = app.config['SLACK_HOST']
-Slack.REDIS_HOST = app.config['REDIS_HOST']
-Slack.REDIS_PORT = app.config['REDIS_PORT']
-Slack.REDIS_DB = app.config['REDIS_DB']
-Slack.REDIS_PASSWORD = app.config['REDIS_PASSWORD']
-Slack.STATIC_URL = app.config['STATIC_URL']
 
-slack = Slack()
+@app.route("/")
+def index():
+    from flask import render_template
+    return render_template(
+        'index.html',
+        GIR_STATIC_URL=app.config['STATIC_URL'],
+    )
 
-class GirConfig(object):
+
+@app.route("/webhook/<event_id>", methods=['POST'])
+def webhook(event_id):
+    from flask import request
+
+    for i_route in EventFlow.GetRoutes(event_id):
+        if i_route is None:
+            return (
+                'Invalid event_id: "%s".' % event_id,
+                400,
+                {
+                    'payload' : request.data
+                }
+            )
+        return EventFlow.HandleRoute(
+            request.get_json(),
+            i_route['message'],
+            icon_url=i_route['icon_url'],
+            username=i_route['username'],
+            remapping=i_route.get('remapping', {}),
+            early_exit=i_route.get('early_exit', {}),
+        )
+
+
+@app.route("/message", methods=['POST'])
+def message():
+    from flask import request
+
+    return EventFlow.HandleRoute(
+        request.get_json(),
+        '`message`',
+        icon_url='gir_sitting.png',
+        username='`username`',
+    )
+
+
+class EventFlow(object):
     '''
     Provides gir webhook configurations to the application.
     '''
@@ -101,11 +137,11 @@ class GirConfig(object):
 
 
     @classmethod
-    def Get(cls, config_id):
+    def GetRoutes(cls, config_id):
         database = cls.GetDatabase()
 
         if database is not None:
-            return database.get(config_id)
+            return [database.get(config_id)]
 
         # Fallback from default/local configuration (for now).
         # This is expected for testing.
@@ -114,29 +150,12 @@ class GirConfig(object):
 
     @classmethod
     def GetLocally(cls, config_id):
-        return cls.CONFIG.get(config_id)
+        return [cls.CONFIG.get(config_id)]
 
-
-
-class Handler(object):
-
-    def __init__(self, config):
-        self.__config = config
-
-    def __call__(self):
-        return self.HandleIt(
-            self.__config['message'],
-            self.__config['icon_url'],
-            self.__config['username'],
-            self.__config.get('remapping', {}),
-            self.__config.get('early_exit', [])
-        )
 
     @classmethod
-    def HandleIt(cls, message, icon_url, username, remapping={}, early_exit=[]):
+    def HandleRoute(cls, data, message, icon_url, username, remapping={}, early_exit=[]):
         from jsonsub import JsonSub, Remapping
-
-        data = request.get_json()
 
         # Create new values on data based on remapping dictionary.
         # Check Remapping function for more details.
@@ -154,57 +173,55 @@ class Handler(object):
         # Sends the message (using queue)
         message = JsonSub(message, data)
         username = JsonSub(username, data)
-        icon_url = Slack.StaticResource(icon_url)
-        icon_url = cls.GravatarUrl(username, default=icon_url)
-        slack.Message(message, icon_url, username)
+        icon_url = app.config['STATIC_URL'] + icon_url
+        icon_url = GravatarUrl(username, default=icon_url)
+        SlackMessage.delay(message, icon_url, username)
 
         return 'OK'
 
 
-    @classmethod
-    def GravatarUrl(cls, email, size=42, default=None):
-        import hashlib
-        from collections import OrderedDict
-        from six.moves.urllib.parse import urlencode
+def GravatarUrl(email, size=42, default=None):
+    import hashlib
+    from collections import OrderedDict
+    from six.moves.urllib.parse import urlencode
 
-        result = "http://www.gravatar.com/avatar/" + hashlib.md5(email.encode('ascii').lower()).hexdigest() + "?"
+    result = "http://www.gravatar.com/avatar/" + hashlib.md5(email.encode('ascii').lower()).hexdigest() + "?"
 
-        params = OrderedDict()
-        if default is not None:
-            params['d'] = default
-        params['s'] = str(size)
-        result = result + urlencode(params)
-        return result
+    params = OrderedDict()
+    if default is not None:
+        params['d'] = default
+    params['s'] = str(size)
+    result = result + urlencode(params)
+    return result
 
 
-@app.route("/")
-def index():
-    return render_template(
-        'index.html',
-        GIR_STATIC_URL=app.config['STATIC_URL'],
+@job
+def SlackMessage(message, icon_url=None, username=None, room=None):
+    from slackclient import SlackClient
+
+    slack_token = app.config['SLACK_TOKEN']
+    assert slack_token is not None, 'Please configure SLACK_TOKEN flask configuration.'
+
+    icon_url = icon_url or app.config['STATIC_URL'] + 'gir_stare.png'
+    username = username or '%(SLACK_USER)s@%(SLACK_HOST)s' % app.config
+
+    room = room or app.config['SLACK_ROOM']
+
+    slack = SlackClient(slack_token)
+    slack.api_call(
+        'chat.postMessage',
+        token=slack_token,
+        channel=room,
+        text=message,
+        icon_url=icon_url,
+        username=username,
     )
 
 
-@app.route("/webhook/<config_id>", methods=['POST'])
-def webhook(config_id):
-    config = GirConfig.Get(config_id)
-    if config is None:
-        return 'Invalid config_id: "%s".' % config_id
-    handler = Handler(config)
-    return handler()
 
-
-@app.route("/message", methods=['POST'])
-def message():
-    config = dict(
-        message = '`message`',
-        icon_url = 'gir_sitting.png',
-        username = '`username`',
-    )
-    handler = Handler(config)
-    return handler()
-
-
+#---------------------------------------------------------------------------------------------------
+# Entry Point
+#---------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
     port = int(app.config['FLASK_PORT'])
     app.run(host='0.0.0.0', port=port, debug=True, use_reloader=True)

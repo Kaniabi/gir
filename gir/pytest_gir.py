@@ -1,11 +1,11 @@
 from __future__ import unicode_literals
+from gir import app, EventFlow
 import json
-from gir import app, GirConfig
 import mock
 
 
 
-@mock.patch('worker.Slack.Message')
+@mock.patch('gir.SlackMessage.delay')
 def test_message(mock_message):
     data = {
         'message' : 'alpha',
@@ -25,8 +25,8 @@ def test_message(mock_message):
     )
 
 
-@mock.patch('worker.Slack.Message')
-@mock.patch('girapp.GirConfig.Get', new=GirConfig.GetLocally)
+@mock.patch('gir.SlackMessage.delay')
+@mock.patch('gir.EventFlow.GetRoutes', new=EventFlow.GetLocally)
 def test_webhook_jira(mock_message):
     data = {
         'issue' : {
@@ -53,8 +53,8 @@ def test_webhook_jira(mock_message):
     )
 
 
-@mock.patch('worker.Slack.Message')
-@mock.patch('girapp.GirConfig.Get', new=GirConfig.GetLocally)
+@mock.patch('gir.SlackMessage.delay')
+@mock.patch('gir.EventFlow.GetRoutes', new=EventFlow.GetLocally)
 def test_webhook_stash(mock_message):
     data = {
       "repository": {
@@ -105,7 +105,7 @@ def test_webhook_stash(mock_message):
     )
 
 
-@mock.patch('girapp.GirConfig.Get', new=GirConfig.GetLocally)
+@mock.patch('gir.EventFlow.GetRoutes', new=EventFlow.GetLocally)
 def test_webhook_jenkins():
 
     def CreatePostData(phase='FINALIZED', status='SUCCESS'):
@@ -124,7 +124,7 @@ def test_webhook_jenkins():
     post_data = CreatePostData()
 
     tester = app.test_client()
-    with mock.patch('worker.Slack.Message') as mock_message:
+    with mock.patch('gir.SlackMessage.delay') as mock_message:
         response = tester.post('/webhook/jenkins', data=post_data, headers={'Content-type': 'application/json'})
         assert response.status_code == 200
         assert response.content_type == 'text/html; charset=utf-8'
@@ -136,7 +136,7 @@ def test_webhook_jenkins():
 
     post_data = CreatePostData(status='FAILURE')
 
-    with mock.patch('worker.Slack.Message') as mock_message:
+    with mock.patch('gir.SlackMessage.delay') as mock_message:
         response = tester.post('/webhook/jenkins', data=post_data, headers={'Content-type': 'application/json'})
         assert response.status_code == 200
         assert response.content_type == 'text/html; charset=utf-8'
@@ -148,7 +148,7 @@ def test_webhook_jenkins():
 
     post_data = CreatePostData(status='ABORTED')
 
-    with mock.patch('worker.Slack.Message') as mock_message:
+    with mock.patch('gir.SlackMessage.delay') as mock_message:
         response = tester.post('/webhook/jenkins', data=post_data, headers={'Content-type': 'application/json'})
         assert response.status_code == 200
         assert response.content_type == 'text/html; charset=utf-8'
@@ -160,7 +160,7 @@ def test_webhook_jenkins():
 
     post_data = CreatePostData(status='UNSTABLE')
 
-    with mock.patch('worker.Slack.Message') as mock_message:
+    with mock.patch('gir.SlackMessage.delay') as mock_message:
         response = tester.post('/webhook/jenkins', data=post_data, headers={'Content-type': 'application/json'})
         assert response.status_code == 200
         assert response.content_type == 'text/html; charset=utf-8'
@@ -171,8 +171,8 @@ def test_webhook_jenkins():
         )
 
 
-@mock.patch('worker.Slack.Message')
-@mock.patch('girapp.GirConfig.Get', new=GirConfig.GetLocally)
+@mock.patch('gir.SlackMessage.delay')
+@mock.patch('gir.EventFlow.GetRoutes', new=EventFlow.GetLocally)
 def test_webhook_github(mock_message):
     data = {
         'repository' : {
@@ -197,8 +197,8 @@ def test_webhook_github(mock_message):
     )
 
 
-@mock.patch('worker.Slack.Message')
-@mock.patch('girapp.GirConfig.Get', new=GirConfig.GetLocally)
+@mock.patch('gir.SlackMessage.delay')
+@mock.patch('gir.EventFlow.GetRoutes', new=EventFlow.GetLocally)
 def test_webhook_circleci(mock_message):
     data = {
         'payload' : {
@@ -220,13 +220,13 @@ def test_webhook_circleci(mock_message):
     )
 
 
-@mock.patch('girapp.GirConfig.Get', new=GirConfig.GetLocally)
+@mock.patch('gir.EventFlow.GetRoutes', new=EventFlow.GetLocally)
 def test_webhook_error():
     data = {}
     data = json.dumps(data)
 
     tester = app.test_client()
     response = tester.post('/webhook/error', data=data, headers={'Content-type': 'application/json'})
-    assert response.status_code == 200
+    assert response.status_code == 400
     assert response.content_type == 'text/html; charset=utf-8'
-    assert response.data == b'Invalid config_id: "error".'
+    assert response.data == b'Invalid event_id: "error".'

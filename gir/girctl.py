@@ -76,9 +76,9 @@ def FillDb(console_):
     '''
     DEVELOPMENT
     '''
-    from gir import GirConfig
+    from gir import EventFlow
 
-    database = GirConfig.GetDatabase('http://188.226.245.90:5984')
+    database = EventFlow.GetDatabase('http://188.226.245.90:5984')
     if database is None:
         console_.Print("Error: Can't connect to couchdb server.")
         return 1

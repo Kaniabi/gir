@@ -1,15 +1,19 @@
 uwsgi  # Linux only!
 flask
-jsonpath-rw
-redis
-requests
-rq
-git+https://github.com/slackhq/python-slackclient.git@39de60050e  # Python3 support
-rq-dashboard
-six
-Flask-Debug
+flask-debug
 flask-appconfig
+
+# Job queue
+flask-rq
+rq
+rq-dashboard
+redis
+
+jsonpath-rw
+requests
+six
 couchdb
+git+https://github.com/slackhq/python-slackclient.git@39de60050e  # Python3 support
 
 # Test dependencies
 pytest
