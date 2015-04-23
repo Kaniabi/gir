@@ -11,7 +11,6 @@ def CreateApp(configfile=None):
     from flask.ext.rq import RQ
 
     result = Flask(__name__)
-    result.debug = True
     AppConfig(result, default_settings="default_config", configfile=configfile)
     RQDashboard(result)
     Debug(result)
