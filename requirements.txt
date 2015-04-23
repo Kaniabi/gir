@@ -9,6 +9,7 @@ rq-dashboard
 six
 Flask-Debug
 flask-appconfig
+couchdb
 
 # Test dependencies
 pytest
