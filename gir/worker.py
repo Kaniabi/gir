@@ -19,7 +19,7 @@ class Slack(object):
     SLACK_HOST = GetConfig('SLACK_HOST')
     REDIS_SERVER = GetConfig('REDIS_SERVER')
     REDIS_DATABASE = GetConfig('REDIS_DATABASE')
-    REDIS_PASSWORD = GetConfig('REDIS_PASSOWRD')
+    REDIS_PASSWORD = GetConfig('REDIS_PASSWORD')
     STATIC_URL = GetConfig('STATIC_URL')
 
 
