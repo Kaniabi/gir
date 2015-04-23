@@ -4,8 +4,9 @@ SLACK_TOKEN = 'xoxb-3724390083-OaNvuxp0CbYdo0fiy5kPBcWE'
 SLACK_ROOM = '#bos-ama'
 SLACK_USER = 'gir'
 SLACK_HOST = 'gir'
-REDIS_SERVER = 'localhost'
-REDIS_PORT = 6379
+REDIS_SERVER = 'localhost:6379'
+REDIS_DATABASE = 0
+REDIS_PASSWORD = 'enderman'
 COUCHDB_SERVER = 'localhost:5984'
 COUCHDB_DATABASE = 'gir-config'
 
