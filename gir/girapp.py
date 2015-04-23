@@ -2,15 +2,31 @@ from __future__ import unicode_literals
 from flask import Flask, request, render_template
 from rq_dashboard import RQDashboard
 from flask_debug import Debug
-from worker import Slack, StaticResource
-import os
+from worker import Slack
 
 
-app = Flask(__name__)
+
+def CreateApp(app_name, configfile=None):
+    from flask.ext.appconfig import AppConfig
+
+    result = Flask(app_name)
+    AppConfig(result, configfile)
+    return result
+
+
+APP_NAME = 'gir'
+app = CreateApp(APP_NAME)
 app.debug = True
 
 RQDashboard(app)
 Debug(app)
+
+Slack.SLACK_TOKEN = app.config['SLACK_TOKEN']
+Slack.SLACK_USER = app.config['SLACK_USER']
+Slack.SLACK_HOST = app.config['SLACK_HOST']
+Slack.REDIS_SERVER = app.config['REDIS_SERVER']
+Slack.REDIS_PORT = app.config['REDIS_PORT']
+Slack.STATIC_URL = app.config['STATIC_URL']
 
 slack = Slack()
 
@@ -19,7 +35,7 @@ class GirConfig(object):
     Provides gir webhook configurations to the application.
     '''
 
-    CONFIG ={
+    CONFIG = {
         'stash' : dict(
             message = '`repository.slug`#`refChanges[0].refId`: `changesets.values[0].toCommit.displayId`: `changesets.values[0].toCommit.message`',
             icon_url = 'stash.png',
@@ -73,8 +89,8 @@ class GirConfig(object):
     @classmethod
     def GetDatabase(
         cls,
-        server = os.environ.get('COUCHDB_SERVER'),
-        database = os.environ.get('COUCHDB_DATABASE', 'gir-config'),
+        server = app.config['COUCHDB_SERVER'],
+        database = app.config['COUCHDB_DATABASE']
     ):
         if server is None:
             return None
@@ -86,18 +102,19 @@ class GirConfig(object):
 
     @classmethod
     def Get(cls, config_id):
-
         database = cls.GetDatabase()
 
-        result = None
         if database is not None:
-            result = database.get(config_id)
+            return database.get(config_id)
 
         # Fallback from default/local configuration (for now).
         # This is expected for testing.
-        if result is None:
-            result = cls.CONFIG.get(config_id)
-        return result
+        return cls.GetLocally(config_id)
+
+
+    @classmethod
+    def GetLocally(cls, config_id):
+        return cls.CONFIG.get(config_id)
 
 
 
@@ -137,7 +154,7 @@ class Handler(object):
         # Sends the message (using queue)
         message = JsonSub(message, data)
         username = JsonSub(username, data)
-        icon_url = StaticResource(icon_url)
+        icon_url = Slack.StaticResource(icon_url)
         icon_url = cls.GravatarUrl(username, default=icon_url)
         slack.Message(message, icon_url, username)
 
@@ -164,7 +181,7 @@ class Handler(object):
 def index():
     return render_template(
         'index.html',
-        GIR_STATIC_URL=os.environ.get('GIR_STATIC_URL', 'http://188.226.245.90/static/')
+        GIR_STATIC_URL=app.config['STATIC_URL'],
     )
 
 
@@ -182,12 +199,12 @@ def message():
     config = dict(
         message = '`message`',
         icon_url = 'gir_sitting.png',
-        username = '`user`@esss.com.br',
+        username = '`username`',
     )
     handler = Handler(config)
     return handler()
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get('PORT', 5000))
+    port = int(app.config['FLASK_PORT'])
     app.run(host='0.0.0.0', port=port, debug=True, use_reloader=True)

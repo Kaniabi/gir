@@ -3,6 +3,7 @@ from clikit.app import App
 import getpass
 import socket
 import sys
+import json
 
 
 
@@ -14,14 +15,38 @@ DEFAULT_HOST = '188.226.245.90'
 DEFAULT_PORT = 80
 
 @app
-def Message(console_, room=DEFAULT_ROOM, host=DEFAULT_HOST, port=DEFAULT_PORT, *message):
+def Message(console_, room=DEFAULT_ROOM, username=None, host=DEFAULT_HOST, port=DEFAULT_PORT, *message):
     '''
     Sends a message to slack.
 
+    :param room: Slack room to send the message.
+    :param username: Sender username for the message.
+    :param host: Gir server url.
+    :param port: Gir server port.
     :param message: The message to send to slack.
-    :param room: Defines the slack room to notify.
     '''
-    _SlackMessage(console_, ' '.join(message), room=room, host=host, port=port)
+    _SlackMessage(console_, ' '.join(message), room=room, username=username, host=host, port=port)
+
+
+@app
+def SendSample(console_, room=DEFAULT_ROOM, host=DEFAULT_HOST, port=DEFAULT_PORT, *config_ids):
+    '''
+    DEVELOPMENT
+    '''
+    import os
+    from ben10.filesystem import GetFileContents
+
+    for i_config_id in config_ids:
+        sample_filename = os.path.dirname(__file__) + '/../samples/' + i_config_id + '.json'
+        if not os.path.isfile(sample_filename):
+            console_.Print("Can't find sample file: %s" % sample_filename)
+            return 1
+
+        data = GetFileContents(sample_filename)
+
+        r = _SlackData(console_, '/webhook/%s' % i_config_id, data, room=room, host=host, port=port)
+
+        console_.Print(r)
 
 
 @app
@@ -59,29 +84,10 @@ def FillDb(console_):
         return 1
 
     database['circleci'] = dict(
-            message = 'Job <`payload.build_url`|`payload.vcs_url`#`payload.branch`>',
-            icon_url = 'circle.png',
-            username = 'CircleCI',
-        )
-
-@app
-def SendSample(console_, config_id, room=DEFAULT_ROOM, host=DEFAULT_HOST, port=DEFAULT_PORT, *message):
-    '''
-    DEVELOPMENT
-    '''
-    import os
-    from ben10.filesystem import GetFileContents
-
-    sample_filename = os.path.dirname(__file__) + '/../samples/' + config_id + '.json'
-    if not os.path.isfile(sample_filename):
-        console_.Print("Can't find sample file: %s" % sample_filename)
-        return 1
-
-    data = GetFileContents(sample_filename)
-
-    r = _SlackData(console_, '/webhook/%s' % config_id, data, room=room, host=host, port=port)
-
-    console_.Print(r)
+        message = 'Job <`payload.build_url`|`payload.vcs_url`#`payload.branch`>',
+        icon_url = 'circle.png',
+        username = 'CircleCI',
+    )
 
 
 @app
@@ -100,16 +106,17 @@ def Run(console_, name='gir'):
     return retcode
 
 
-def _SlackMessage(console_, message, room=DEFAULT_ROOM, host=DEFAULT_HOST, port=DEFAULT_PORT):
+def _SlackMessage(console_, message, username=None, room=DEFAULT_ROOM, host=DEFAULT_HOST, port=DEFAULT_PORT):
     USER = getpass.getuser()
     HOST = socket.gethostname()
+    username = username or '%s@%s' % (USER ,HOST)
 
     data = {
         'message' : message,
-        'user' : USER,
-        'host' : HOST,
         'room' : room,
+        'username' : username,
     }
+    data = json.dumps(data)
     return _SlackData(console_, '/message', data, room=room, host=host, port=port)
 
 
@@ -123,11 +130,11 @@ def _SlackData(console_, url, data, room=DEFAULT_ROOM, host=DEFAULT_HOST, port=D
     }
     r = requests.post(
         'http://%(host)s:%(port)s%(url)s' % locals(),
-        data=json.dumps(data),
+        data=data,
         headers=headers
     )
     console_.Print('>' * 80)
-    console_.Print(r.text)
+    console_.Print(r.text.encode(sys.stdout.encoding, 'ignore'))
     console_.Print('>' * 80)
     return r
 

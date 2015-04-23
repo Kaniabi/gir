@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 import json
-from girapp import app
+from girapp import app, GirConfig
 from datatree import Tree
 import mock
 
@@ -8,12 +8,12 @@ import mock
 
 @mock.patch('worker.Slack.Message')
 def test_message(mock_message):
-    data = Tree()
-    data.message('alpha')
-    data.user('bravo')
-    data.host('charlie')
-    data.room('delta')
-    data = data.render('json')
+    data = {
+        'message' : 'alpha',
+        'username' : 'bravo@esss.com.br',
+        'room' : 'delta',
+    }
+    data = json.dumps(data)
 
     tester = app.test_client()
     response = tester.post('/message', data=data, headers={'Content-type': 'application/json'})
@@ -27,16 +27,21 @@ def test_message(mock_message):
 
 
 @mock.patch('worker.Slack.Message')
+@mock.patch('girapp.GirConfig.Get', new=GirConfig.GetLocally)
 def test_webhook_jira(mock_message):
-    data = Tree()
-    with data.issue() as issue:
-        issue.key('alpha')
-        issue.self('bravo')
-        with issue.fields() as fields:
-            fields.summary('charlie')
-    with data.user() as user:
-        user.name('bravo')
-    data = data.render('json')
+    data = {
+        'issue' : {
+            'key' : 'alpha',
+            'self' : 'bravo',
+            'fields' : {
+                'summary' : 'charlie',
+            }
+        },
+        'user' : {
+            'name' : 'bravo',
+        }
+    }
+    data = json.dumps(data)
 
     tester = app.test_client()
     response = tester.post('/webhook/jira', data=data, headers={'Content-type': 'application/json'})
@@ -50,6 +55,7 @@ def test_webhook_jira(mock_message):
 
 
 @mock.patch('worker.Slack.Message')
+@mock.patch('girapp.GirConfig.Get', new=GirConfig.GetLocally)
 def test_webhook_stash(mock_message):
     data = {
       "repository": {
@@ -100,6 +106,7 @@ def test_webhook_stash(mock_message):
     )
 
 
+@mock.patch('girapp.GirConfig.Get', new=GirConfig.GetLocally)
 def test_webhook_jenkins():
 
     def CreatePostData(phase='FINALIZED', status='SUCCESS'):
@@ -164,6 +171,7 @@ def test_webhook_jenkins():
 
 
 @mock.patch('worker.Slack.Message')
+@mock.patch('girapp.GirConfig.Get', new=GirConfig.GetLocally)
 def test_webhook_github(mock_message):
     data = {
         'repository' : {
@@ -189,6 +197,7 @@ def test_webhook_github(mock_message):
 
 
 @mock.patch('worker.Slack.Message')
+@mock.patch('girapp.GirConfig.Get', new=GirConfig.GetLocally)
 def test_webhook_circleci(mock_message):
     data = {
         'payload' : {
@@ -210,6 +219,7 @@ def test_webhook_circleci(mock_message):
     )
 
 
+@mock.patch('girapp.GirConfig.Get', new=GirConfig.GetLocally)
 def test_webhook_error():
     data = {}
     data = json.dumps(data)
