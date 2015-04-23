@@ -17,12 +17,16 @@ ADD . /gir
 # . nginx: Replace default site by nginx.conf
 # . supervisord: Use our supervisor.conf
 RUN \
+    apt-get update && \
     apt-get install -y nginx redis-server supervisor python3-pip git && \
-    pip3 install -r /gir/config/requirements.txt && \
-    sed -i 's/^\(daemonize\s*\)yes\s*$/\1no/g' /etc/redis/redis.conf && \
+    apt-get clean && \
+    pip3 install -r /gir/requirements.txt
+
+RUN \
     echo "\ndaemon off;" >> /etc/nginx/nginx.conf && \
     rm /etc/nginx/sites-enabled/default && \
     ln -s /gir/config/nginx.conf /etc/nginx/sites-enabled/ && \
+    sed -i 's/^\(daemonize\s*\)yes\s*$/\1no/g' /etc/redis/redis.conf && \
     ln -s /gir/config/supervisor.conf /etc/supervisor/conf.d/
 
 EXPOSE 80
