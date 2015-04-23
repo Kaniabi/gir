@@ -1,7 +1,5 @@
 from __future__ import unicode_literals
 from flask import Flask, request, render_template
-from rq_dashboard import RQDashboard
-from flask_debug import Debug
 from worker import Slack
 
 
