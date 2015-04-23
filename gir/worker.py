@@ -17,8 +17,9 @@ class Slack(object):
     SLACK_ROOM = GetConfig('SLACK_ROOM')
     SLACK_USER = GetConfig('SLACK_USER')
     SLACK_HOST = GetConfig('SLACK_HOST')
-    REDIS_SERVER = GetConfig('REDIS_SERVER')
-    REDIS_DATABASE = GetConfig('REDIS_DATABASE')
+    REDIS_HOST = GetConfig('REDIS_HOST')
+    REDIS_PORT = GetConfig('REDIS_PORT')
+    REDIS_DB = GetConfig('REDIS_DB')
     REDIS_PASSWORD = GetConfig('REDIS_PASSWORD')
     STATIC_URL = GetConfig('STATIC_URL')
 
@@ -34,10 +35,12 @@ class Slack(object):
     def CreateConnection(cls):
         from redis import Redis
 
-        server, port = cls.REDIS_SERVER.split(':')
-        db = cls.REDIS_DATABASE
-        password = cls.REDIS_PASSWORD
-        return Redis(host=server, port=port, db=db, password=password)
+        return Redis(
+            host=cls.REDIS_HOST,
+            port=cls.REDIS_PORT,
+            db=cls.REDIS_DB,
+            password=cls.REDIS_PASSWORD
+        )
 
 
     def Message(self, message, icon_url=None, username=None, room=SLACK_ROOM):

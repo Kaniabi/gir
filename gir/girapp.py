@@ -22,8 +22,9 @@ app = CreateApp()
 Slack.SLACK_TOKEN = app.config['SLACK_TOKEN']
 Slack.SLACK_USER = app.config['SLACK_USER']
 Slack.SLACK_HOST = app.config['SLACK_HOST']
-Slack.REDIS_SERVER = app.config['REDIS_SERVER']
-Slack.REDIS_DATABASE = app.config['REDIS_DATABASE']
+Slack.REDIS_HOST = app.config['REDIS_HOST']
+Slack.REDIS_PORT = app.config['REDIS_PORT']
+Slack.REDIS_DB = app.config['REDIS_DB']
 Slack.REDIS_PASSWORD = app.config['REDIS_PASSWORD']
 Slack.STATIC_URL = app.config['STATIC_URL']
 
