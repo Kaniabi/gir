@@ -11,7 +11,7 @@ couchdb:
   environment:
     - COUCHDB_PASS=enderman
 gir:
-  image: quay.io/kaniabi/gir:v0.1.3
+  image: quay.io/kaniabi/gir:v0.1.5
   links:
     - "redis:redis"
     - "couchdb:couchdb"

@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 import json
-from girapp import app, GirConfig
+from gir import app, GirConfig
 import mock
 
 

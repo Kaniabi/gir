@@ -76,7 +76,7 @@ def FillDb(console_):
     '''
     DEVELOPMENT
     '''
-    from girapp import GirConfig
+    from gir import GirConfig
 
     database = GirConfig.GetDatabase('http://188.226.245.90:5984')
     if database is None:

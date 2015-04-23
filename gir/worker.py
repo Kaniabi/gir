@@ -5,7 +5,7 @@ def GetConfig(name):
     import os
     import default_config
 
-    result = os.environ.get('GIR_' + name)
+    result = os.environ.get('GIRAPP_' + name)
     if result is not None:
         return result
     return getattr(default_config, name)
@@ -17,30 +17,15 @@ class Slack(object):
     SLACK_ROOM = GetConfig('SLACK_ROOM')
     SLACK_USER = GetConfig('SLACK_USER')
     SLACK_HOST = GetConfig('SLACK_HOST')
-    REDIS_HOST = GetConfig('REDIS_HOST')
+    REDIS_SERVER = GetConfig('REDIS_SERVER')
     REDIS_PORT = GetConfig('REDIS_PORT')
-    REDIS_DB = GetConfig('REDIS_DB')
-    REDIS_PASSWORD = GetConfig('REDIS_PASSWORD')
     STATIC_URL = GetConfig('STATIC_URL')
 
-
-    def __init__(self):
-        from rq import Queue
-
-        connection = self.CreateConnection()
-        self.__queue = Queue(connection=connection)
-
-
-    @classmethod
-    def CreateConnection(cls):
+    def __init__(self, server=REDIS_SERVER, port=REDIS_PORT):
         from redis import Redis
-
-        return Redis(
-            host=cls.REDIS_HOST,
-            port=cls.REDIS_PORT,
-            db=cls.REDIS_DB,
-            password=cls.REDIS_PASSWORD
-        )
+        from rq import Queue
+        connection = Redis(server, port)
+        self.__queue = Queue(connection=connection)
 
 
     def Message(self, message, icon_url=None, username=None, room=SLACK_ROOM):
