@@ -3,7 +3,7 @@ couchdb:
   environment:
     - COUCHDB_PASS=enderman
   ports:
-    - '5984:5984'
+    - '5984:5101'
 gir:
   image: 'quay.io/kaniabi/gir:v0.1.5'
   environment:
@@ -35,4 +35,4 @@ redis:
   environment:
     - REDIS_PASS=enderman
   ports:
-    - '6379:6379'
+    - '6379:5102'
