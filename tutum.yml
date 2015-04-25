@@ -7,22 +7,23 @@ couchdb:
 gir:
   image: 'quay.io/kaniabi/gir:v0.1.5'
   environment:
-    - GIR_COUCHDB_SERVER=couchdb:5984
+    - 'GIR_COUCHDB_SERVER=couchdb:5984'
     - GIR_DEBUG=True
     - GIR_FLASK_PORT=80
-    - GIR_RQ_DEFAULT_HOST=redis
-    - GIR_RQ_DEFAULT_PORT=6479
-    - GIR_RQ_DEFAULT_PASSWORD=enderman
-    - GIR_RQ_DEFAULT_DB=0
-    - GIR_REDIS_HOST=redis
-    - GIR_REDIS_PORT=6479
-    - GIR_REDIS_PASSWORD=enderman
+    - 'GIR_REDIS_URL=redis:/redis/0'
     - GIR_REDIS_DB=0
+    - GIR_REDIS_HOST=redis
+    - GIR_REDIS_PASSWORD=enderman
+    - GIR_REDIS_PORT=6479
+    - GIR_RQ_DEFAULT_DB=0
+    - GIR_RQ_DEFAULT_HOST=redis
+    - GIR_RQ_DEFAULT_PASSWORD=enderman
+    - GIR_RQ_DEFAULT_PORT=6479
     - GIR_SLACK_HOST=$HOSTNAME
-    - GIR_SLACK_ROOM=#bos-ama
+    - 'GIR_SLACK_ROOM=#bos-ama'
     - GIR_SLACK_TOKEN=xoxb-3724390083-OaNvuxp0CbYdo0fiy5kPBcWE
     - GIR_SLACK_USER=gir
-    - GIR_STATIC_URL=http://$TUTUM_NODE_FQDN/static/
+    - 'GIR_STATIC_URL=http://$TUTUM_NODE_FQDN/static/'
   links:
     - couchdb
     - redis

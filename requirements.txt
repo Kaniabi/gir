@@ -1,20 +1,26 @@
+# Basic dependencies
+## Application
 uwsgi  # Linux only!
 flask
 flask-debug
 flask-appconfig
+requests
+six
+## Test dependencies
+pytest
+mock
 
 # Job queue
 flask-rq
-rq
 rq-dashboard
+rq
 redis
 
-jsonpath-rw
-requests
-six
+# Database
 couchdb
+
+# APIs
 git+https://github.com/slackhq/python-slackclient.git@39de60050e  # Python3 support
 
-# Test dependencies
-pytest
-mock
+# jsonsub
+jsonpath-rw
