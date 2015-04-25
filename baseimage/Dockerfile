@@ -11,6 +11,7 @@ ENV LANG=C.UTF-8
 RUN \
     apt-get update && \
     apt-get install -y nginx supervisor python3-pip git && \
+    pip3 install -y uwsgi flask flask-debug flask-appconfig requests pytest mock six
     apt-get clean && \
     echo "\ndaemon off;" >> /etc/nginx/nginx.conf && \
     rm /etc/nginx/sites-enabled/default
