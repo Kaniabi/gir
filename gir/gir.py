@@ -12,6 +12,7 @@ def CreateApp(configfile=None):
 
     result = Flask(__name__)
     AppConfig(result, default_settings="default_config", configfile=configfile)
+    result.config['RQ_DEFAULT_URL'] = result.config['REDIS_URL']
     RQDashboard(result)
     Debug(result)
     RQ(result)
@@ -222,5 +223,5 @@ def SlackMessage(message, icon_url=None, username=None, room=None):
 # Entry Point
 #---------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
-    port = int(app.config['FLASK_PORT'])
+    port = 5000  #int(app.config['FLASK_PORT'])
     app.run(host='0.0.0.0', port=port, debug=True, use_reloader=True)
