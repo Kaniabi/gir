@@ -4,6 +4,7 @@ import json
 import mock
 
 
+SERVER_IP = '45.55.243.17'
 
 @mock.patch('gir.SlackMessage.delay')
 def test_message(mock_message):
@@ -20,7 +21,7 @@ def test_message(mock_message):
     assert response.content_type == 'text/html; charset=utf-8'
     mock_message.assert_called_once_with(
         'alpha',
-        'http://www.gravatar.com/avatar/3a1d8ffc9b5c06a8f1f4752aa8b5f59f?d=http%3A%2F%2F188.226.245.90%2Fstatic%2Fgir_sitting.png&s=42',
+        'http://www.gravatar.com/avatar/3a1d8ffc9b5c06a8f1f4752aa8b5f59f?d=http%3A%2F%2F' + SERVER_IP + '%2Fstatic%2Fgir_sitting.png&s=42',
         'bravo@esss.com.br'
     )
 
@@ -48,7 +49,7 @@ def test_webhook_jira(mock_message):
     assert response.content_type == 'text/html; charset=utf-8'
     mock_message.assert_called_once_with(
         '<bravo|alpha>: charlie',
-        'http://www.gravatar.com/avatar/3a1d8ffc9b5c06a8f1f4752aa8b5f59f?d=http%3A%2F%2F188.226.245.90%2Fstatic%2Fjira.png&s=42',
+        'http://www.gravatar.com/avatar/3a1d8ffc9b5c06a8f1f4752aa8b5f59f?d=http%3A%2F%2F' + SERVER_IP + '%2Fstatic%2Fjira.png&s=42',
         'bravo@esss.com.br',
     )
 
@@ -100,7 +101,7 @@ def test_webhook_stash(mock_message):
     assert response.content_type == 'text/html; charset=utf-8'
     mock_message.assert_called_once_with(
         'ben10#refs/heads/ama: 8ad4928929b: Adding XmlFactory.AsDict and XmlFactory.AsJson.',
-        'http://www.gravatar.com/avatar/49d2560e31d46da8237b9a32852ce080?d=http%3A%2F%2F188.226.245.90%2Fstatic%2Fstash.png&s=42',
+        'http://www.gravatar.com/avatar/49d2560e31d46da8237b9a32852ce080?d=http%3A%2F%2F' + SERVER_IP + '%2Fstatic%2Fstash.png&s=42',
         'ama@esss.com.br',
     )
 
@@ -130,7 +131,7 @@ def test_webhook_jenkins():
         assert response.content_type == 'text/html; charset=utf-8'
         mock_message.assert_called_once_with(
             'Job :white_check_mark: <https://eden.esss.com.br/jenkins/alpha|bravo> <charlie|#999>.',
-            'http://www.gravatar.com/avatar/ab63a76362c3972ac83d5cb8830fdb51?d=http%3A%2F%2F188.226.245.90%2Fstatic%2Fjenkins.png&s=42',
+            'http://www.gravatar.com/avatar/ab63a76362c3972ac83d5cb8830fdb51?d=http%3A%2F%2F' + SERVER_IP + '%2Fstatic%2Fjenkins.png&s=42',
             'Jenkins',
         )
 
@@ -142,7 +143,7 @@ def test_webhook_jenkins():
         assert response.content_type == 'text/html; charset=utf-8'
         mock_message.assert_called_once_with(
             'Job :no_entry: <https://eden.esss.com.br/jenkins/alpha|bravo> <charlie|#999>.',
-            'http://www.gravatar.com/avatar/ab63a76362c3972ac83d5cb8830fdb51?d=http%3A%2F%2F188.226.245.90%2Fstatic%2Fjenkins.png&s=42',
+            'http://www.gravatar.com/avatar/ab63a76362c3972ac83d5cb8830fdb51?d=http%3A%2F%2F' + SERVER_IP + '%2Fstatic%2Fjenkins.png&s=42',
             'Jenkins',
         )
 
@@ -154,7 +155,7 @@ def test_webhook_jenkins():
         assert response.content_type == 'text/html; charset=utf-8'
         mock_message.assert_called_once_with(
             'Job :warning: <https://eden.esss.com.br/jenkins/alpha|bravo> <charlie|#999>.',
-            'http://www.gravatar.com/avatar/ab63a76362c3972ac83d5cb8830fdb51?d=http%3A%2F%2F188.226.245.90%2Fstatic%2Fjenkins.png&s=42',
+            'http://www.gravatar.com/avatar/ab63a76362c3972ac83d5cb8830fdb51?d=http%3A%2F%2F' + SERVER_IP + '%2Fstatic%2Fjenkins.png&s=42',
             'Jenkins',
         )
 
@@ -166,7 +167,7 @@ def test_webhook_jenkins():
         assert response.content_type == 'text/html; charset=utf-8'
         mock_message.assert_called_once_with(
             'Job :warning: <https://eden.esss.com.br/jenkins/alpha|bravo> <charlie|#999>.',
-            'http://www.gravatar.com/avatar/ab63a76362c3972ac83d5cb8830fdb51?d=http%3A%2F%2F188.226.245.90%2Fstatic%2Fjenkins.png&s=42',
+            'http://www.gravatar.com/avatar/ab63a76362c3972ac83d5cb8830fdb51?d=http%3A%2F%2F' + SERVER_IP + '%2Fstatic%2Fjenkins.png&s=42',
             'Jenkins',
         )
 
@@ -192,7 +193,7 @@ def test_webhook_github(mock_message):
     assert response.content_type == 'text/html; charset=utf-8'
     mock_message.assert_called_once_with(
         'Commit on <http://github.com/kaniabi/gir|kaniabi/gir>',
-        'http://www.gravatar.com/avatar/8101da6577a821fb6f95098de8f1a293?d=http%3A%2F%2F188.226.245.90%2Fstatic%2Fgithub.png&s=42',
+        'http://www.gravatar.com/avatar/8101da6577a821fb6f95098de8f1a293?d=http%3A%2F%2F' + SERVER_IP + '%2Fstatic%2Fgithub.png&s=42',
         'kaniabi@gmail.com',
     )
 
@@ -215,7 +216,7 @@ def test_webhook_circleci(mock_message):
     assert response.content_type == 'text/html; charset=utf-8'
     mock_message.assert_called_once_with(
         'Job <alpha|bravo#charlie>',
-        'http://www.gravatar.com/avatar/afbc9a4d12e9481a8b1e68912685c436?d=http%3A%2F%2F188.226.245.90%2Fstatic%2Fcircle.png&s=42',
+        'http://www.gravatar.com/avatar/afbc9a4d12e9481a8b1e68912685c436?d=http%3A%2F%2F' + SERVER_IP + '%2Fstatic%2Fcircle.png&s=42',
         'CircleCI',
     )
 
