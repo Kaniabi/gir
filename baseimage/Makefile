@@ -1,6 +1,6 @@
 CONTAINER_NAME = quay.io/kaniabi/baseimage
 NAME = baseimage
-VERSION = v1.1
+VERSION = v1.2
 
 .PHONY: build 
 
