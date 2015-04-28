@@ -1,6 +1,6 @@
 # Using phusion baseimage as explained here:
 #   https://github.com/phusion/baseimage-docker
-FROM quay.io/kaniabi/baseimage:v1.1
+FROM quay.io/kaniabi/baseimage:v1.2
 MAINTAINER Alexandre Andrade <ama@esss.com.br>
 
 # Update working directories
