@@ -10,7 +10,6 @@ ENV LANG=C.UTF-8
 # . nginx: Delete default sites.
 RUN \
     apt-get update && \
-    apt-get upgrade && \
     apt-get install -y nginx supervisor python3-pip git && \
     pip3 install uwsgi flask flask-debug flask-appconfig requests pytest mock six && \
     apt-get clean && \
