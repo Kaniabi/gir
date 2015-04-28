@@ -15,4 +15,5 @@ RUN \
     ln -s /gir/config/supervisor.conf /etc/supervisor/conf.d/
 
 EXPOSE 80
-ENTRYPOINT ["supervisord", "-n"]
+#ENTRYPOINT ["supervisord", "-n"]
+CMD ["supervisord", "-n"]
