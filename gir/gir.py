@@ -195,7 +195,7 @@ def GravatarUrl(email, size=42, default=None):
     return result
 
 
-@job
+@job('normal')
 def SlackMessage(message, icon_url=None, username=None, room=None):
     from slackclient import SlackClient
 
