@@ -1,9 +1,3 @@
-couchdb:
-  image: 'tutum/couchdb:latest'
-  environment:
-    - COUCHDB_PASS=enderman
-  ports:
-    - '5984:5101'
 gir:
   image: 'quay.io/kaniabi/gir:latest'
   environment:
@@ -27,13 +21,21 @@ gir:
   links:
     - couchdb
     - redis
+  volumes:
+    - /var/log/gir:/var/log/gir
   ports:
     - '80:80'
   roles:
     - global
+couchdb:
+  image: 'tutum/couchdb:latest'
+  environment:
+    - COUCHDB_PASS=enderman
+  ports:
+    - '5101:5984'
 redis:
   image: 'tutum/redis:latest'
   environment:
     - REDIS_PASS=enderman
   ports:
-    - '6379:5102'
+    - '5102:6379'

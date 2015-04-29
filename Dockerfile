@@ -1,5 +1,3 @@
-# Using phusion baseimage as explained here:
-#   https://github.com/phusion/baseimage-docker
 FROM quay.io/kaniabi/baseimage:v1.1
 MAINTAINER Alexandre Andrade <ama@esss.com.br>
 
@@ -14,6 +12,7 @@ RUN \
     ln -s /gir/config/nginx.conf /etc/nginx/sites-enabled/ && \
     ln -s /gir/config/supervisor.conf /etc/supervisor/conf.d/
 
+VOLUME ["/var/log/gir"]
+
 EXPOSE 80
-#ENTRYPOINT ["supervisord", "-n"]
-CMD ["supervisord", "-n"]
+ENTRYPOINT ["supervisord", "-n"]
