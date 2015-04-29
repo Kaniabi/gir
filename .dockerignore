@@ -1,3 +1,10 @@
 /.*/
+/.*
 /baseimage/
 /samples/
+Dockerfile
+Makefile
+Vagrantfile
+tutum.yml
+pytest.ini
+README.md
