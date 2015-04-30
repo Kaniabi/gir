@@ -151,11 +151,11 @@ class EventFlow(object):
                 }
             },
             early_exit = [
-                (
-                    '"`build.phase`" == "COMPLETED"',
-                    'Ignore COMPLETED events in favor of FINALIZED (after all post-build).',
-                    'OK',
-                ),
+                {
+                    'expression' : '"`build.phase`" == "COMPLETED"',
+                    'description' : 'Ignore COMPLETED events in favor of FINALIZED (after all post-build).',
+                    'result' : 'OK',
+                },
             ],
         ),
     }
@@ -211,7 +211,7 @@ class EventFlow(object):
 
 
     @classmethod
-    def HandleRoute(cls, data, message, icon_url, username, remapping={}, early_exit=[]):
+    def HandleRoute(cls, data, message, icon_url, username, remapping={}, early_exit={}):
         from jsonsub import JsonSub, Remapping
 
         # Create new values on data based on remapping dictionary.
@@ -222,10 +222,12 @@ class EventFlow(object):
             data[i_key] = Remapping(i_mapping, data)
 
         # Exits without sending the message to Slack under some conditions (early_exit).
-        for i_expression, i_description, i_result in early_exit:
-            i_expression = JsonSub(i_expression, data)
-            if eval(i_expression):
-                return i_result
+        for i_early_exit in early_exit:
+            expression = i_early_exit['expression']
+            result = i_early_exit['result']
+            expression = JsonSub(expression, data)
+            if eval(expression):
+                return result
 
         # Sends the message (using queue)
         message = JsonSub(message, data)

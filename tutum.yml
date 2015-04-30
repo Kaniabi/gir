@@ -23,17 +23,19 @@ gir:
     - couchdb
     - redis
   volumes:
-    - /var/log/gir:/var/log/gir
+    - /home/gir:/home/gir
   ports:
     - '80:80'
   roles:
     - global
+
 couchdb:
   image: 'tutum/couchdb:latest'
   environment:
     - COUCHDB_PASS=enderman
   ports:
     - '5101:5984'
+
 redis:
   image: 'tutum/redis:latest'
   environment:
