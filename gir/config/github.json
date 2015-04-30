@@ -1,0 +1,5 @@
+{
+  "message" : "Commit on <`repository.url`|`repository.full_name`>",
+  "icon_url" : "github.png",
+  "username" : "`pusher.email` (couchdb)"
+}

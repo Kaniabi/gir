@@ -1,0 +1,13 @@
+<!doctype html>
+<html>
+    <head>
+        <title>EventFlow</title>
+    </head>
+    <body>
+        <h1>Routes for "{{ event_id }}":</h1>
+        <p></p><a href="http://45.55.243.17:5101/_utils/document.html?gir-config/{{ event_id }}">Edit</a></p>
+        {% for i_route in routes %}
+        <pre>{{ i_route }}</pre>
+        {% endfor %}
+    </body>
+</html>

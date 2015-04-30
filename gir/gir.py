@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 from flask.ext.rq import job
-
+import json
 
 
 def CreateApp(configfile=None):
@@ -31,29 +31,6 @@ def index():
     )
 
 
-@app.route("/webhook/<event_id>", methods=['POST'])
-def webhook(event_id):
-    from flask import request
-
-    for i_route in EventFlow.GetRoutes(event_id):
-        if i_route is None:
-            return (
-                'Invalid event_id: "%s".' % event_id,
-                400,
-                {
-                    'payload' : request.data
-                }
-            )
-        return EventFlow.HandleRoute(
-            request.get_json(),
-            i_route['message'],
-            icon_url=i_route['icon_url'],
-            username=i_route['username'],
-            remapping=i_route.get('remapping', {}),
-            early_exit=i_route.get('early_exit', {}),
-        )
-
-
 @app.route("/message", methods=['POST'])
 def message():
     from flask import request
@@ -64,6 +41,54 @@ def message():
         icon_url='gir_sitting.png',
         username='`username`',
     )
+
+
+@app.route("/webhook/<event_id>", methods=('GET', 'POST'))
+def webhook(event_id):
+    from flask import request, render_template
+
+    if request.method == 'GET':
+        # Print some information
+        routes = EventFlow.GetRoutes(event_id)
+        if routes:
+            pretty_routes = []
+            for i_route in routes:
+                pretty_routes.append(
+                    json.dumps(i_route, sort_keys=True, indent=2, separators=(',',':'))
+                )
+            result = render_template(
+                'routes.html',
+                event_id=event_id,
+                routes=pretty_routes,
+            )
+        else:
+            routes = EventFlow.ListRoutes()
+            result = render_template(
+                'no_route.html',
+                event_id=event_id,
+                routes=routes,
+            )
+
+        return result
+    else:
+        # Handle JSON payload.
+        for i_route in EventFlow.GetRoutes(event_id):
+            if i_route is None:
+                return (
+                    'Invalid event_id: "%s".' % event_id,
+                    400,
+                    {
+                        'payload' : request.data
+                    }
+                )
+            return EventFlow.HandleRoute(
+                request.get_json(),
+                i_route['message'],
+                icon_url=i_route['icon_url'],
+                username=i_route['username'],
+                remapping=i_route.get('remapping', {}),
+                early_exit=i_route.get('early_exit', {}),
+            )
 
 
 class EventFlow(object):
@@ -138,14 +163,32 @@ class EventFlow(object):
 
     @classmethod
     def GetRoutes(cls, config_id):
+        '''
+        :param unicode config_id:
+        :return list(dict):
+        '''
         database = cls.GetDatabase()
 
         if database is not None:
-            return [database.get(config_id)]
+            result = database.get(config_id)
+            if result is None:
+                return []
+            else:
+                return [result]
 
         # Fallback from default/local configuration (for now).
         # This is expected for testing.
         return cls.GetLocally(config_id)
+
+
+    @classmethod
+    def ListRoutes(cls):
+        database = cls.GetDatabase()
+        if database is not None:
+            map_func = "function(doc) { emit(doc.name, 1); }"
+            return [i.id for i in database.query(map_func)]
+        else:
+            return sorted(cls.CONFIGS.keys())
 
 
     @classmethod
@@ -223,5 +266,5 @@ def SlackMessage(message, icon_url=None, username=None, room=None):
 # Entry Point
 #---------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
-    port = 5000  #int(app.config['FLASK_PORT'])
+    port = int(app.config['FLASK_PORT'])
     app.run(host='0.0.0.0', port=port, debug=True, use_reloader=True)

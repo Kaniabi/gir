@@ -1,0 +1,14 @@
+<!doctype html>
+<html>
+    <head>
+        <title>EventFlow</title>
+    </head>
+    <body>
+        <h1>No route for "{{ event_id }}".</h1>
+        <ul id="navigation">
+            {% for i_route in routes %}
+            <li><a href="/webhook/{{ i_route }}">{{ i_route }}</a></li>
+            {% endfor %}
+        </ul>
+    </body>
+</html>

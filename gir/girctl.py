@@ -11,7 +11,7 @@ app = App('girctl')
 
 
 DEFAULT_ROOM = '#bos-ama'
-DEFAULT_HOST = '188.226.245.90'
+DEFAULT_HOST = '45.55.243.17'
 DEFAULT_PORT = 80
 
 @app
@@ -37,7 +37,7 @@ def SendSample(console_, room=DEFAULT_ROOM, host=DEFAULT_HOST, port=DEFAULT_PORT
     from ben10.filesystem import GetFileContents
 
     for i_config_id in config_ids:
-        sample_filename = os.path.dirname(__file__) + '/../samples/' + i_config_id + '.json'
+        sample_filename = os.path.dirname(__file__) + '/samples/' + i_config_id + '.json'
         if not os.path.isfile(sample_filename):
             console_.Print("Can't find sample file: %s" % sample_filename)
             return 1
@@ -128,8 +128,10 @@ def _SlackData(console_, url, data, room=DEFAULT_ROOM, host=DEFAULT_HOST, port=D
         'Content-type': 'application/json; charset=utf-8',
         'Accept': 'text/plain',
     }
+    url = 'http://%(host)s%(url)s' % locals()
+    console_.Print('<yellow>%(url)s</>' % locals())
     r = requests.post(
-        'http://%(host)s:%(port)s%(url)s' % locals(),
+        url,
         data=data,
         headers=headers
     )

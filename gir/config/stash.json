@@ -1,0 +1,5 @@
+{
+  "message" : "`repository.slug`#`refChanges[0].refId`: `changesets.values[0].toCommit.displayId`: `changesets.values[0].toCommit.message`",
+  "icon_url" : "stash.png",
+  "username" : "`changesets.values[0].toCommit.author.emailAddress` (couchdb)"
+}

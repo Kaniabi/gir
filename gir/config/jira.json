@@ -1,0 +1,5 @@
+{
+  "message" : "<`issue.self`|`issue.key`>: `issue.fields.summary`",
+  "icon_url" : "jira.png",
+  "username" : "`user.name`@esss.com.br (couchdb)"
+}

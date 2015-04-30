@@ -1,0 +1,21 @@
+{
+  "message" : "Job `emoji` <https://eden.esss.com.br/jenkins/`url`|`name`> <`build.full_url`|#`build.number`>.",
+  "icon_url" : "jenkins.png",
+  "username" : "Jenkins (couchdb)",
+  "remapping" : {
+    "emoji" : {
+      "__key"               : "`build.phase`, `build.status`",
+      "__default"           : "(`build.phase`, `build.status`) :question:",
+      "STARTED, "           : ":arrow_forward:",
+      "FINALIZED, FAILURE"  : ":no_entry:",
+      "FINALIZED, SUCCESS"  : ":white_check_mark:",
+      "FINALIZED, ABORTED"  : ":warning:",
+      "FINALIZED, UNSTABLE" : ":warning:"
+    }
+  },
+  "early_exit" : {
+    "condition" : "'`build.phase`' == 'COMPLETED'",
+    "message" : "Ignore COMPLETED events in favor of FINALIZED (after all post-build).",
+    "result" : "OK"
+  }
+}

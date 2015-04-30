@@ -1,0 +1,5 @@
+{
+  "message" : "Docker build started at quay.io: <`homepage`|`repository`>",
+  "icon_url" : "quayio.png",
+  "username" : "Quay.io (couchdb)"
+}
