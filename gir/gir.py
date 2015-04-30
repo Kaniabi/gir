@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 from flask.ext.rq import job
 import json
+import os
 
 
 def CreateApp(configfile=None):
@@ -22,12 +23,24 @@ def CreateApp(configfile=None):
 app = CreateApp()
 
 
+def GetConfig(config):
+    '''
+    Obtain the flask application configuration with a twist: expand any environment variables.
+
+    :param unicode config:
+    :return unicode:
+    '''
+    result = app.config[config]
+    result = os.path.expandvars(result)
+    return result
+
+
 @app.route("/")
 def index():
     from flask import render_template
     return render_template(
         'index.html',
-        GIR_STATIC_URL=app.config['STATIC_URL'],
+        GIR_STATIC_URL=GetConfig('STATIC_URL'),
     )
 
 
@@ -150,14 +163,15 @@ class EventFlow(object):
     @classmethod
     def GetDatabase(
         cls,
-        server = app.config['COUCHDB_SERVER'],
-        database = app.config['COUCHDB_DATABASE']
+        server = GetConfig('COUCHDB_SERVER'),
+        database = GetConfig('COUCHDB_DATABASE')
     ):
         if server is None:
             return None
 
         from couchdb.client import Server
         couchdb_server = Server(server)
+
         return couchdb_server[database]
 
 
@@ -216,7 +230,7 @@ class EventFlow(object):
         # Sends the message (using queue)
         message = JsonSub(message, data)
         username = JsonSub(username, data)
-        icon_url = app.config['STATIC_URL'] + icon_url
+        icon_url = GetConfig('STATIC_URL') + icon_url
         icon_url = GravatarUrl(username, default=icon_url)
         SlackMessage.delay(message, icon_url, username)
 
@@ -242,13 +256,13 @@ def GravatarUrl(email, size=42, default=None):
 def SlackMessage(message, icon_url=None, username=None, room=None):
     from slackclient import SlackClient
 
-    slack_token = app.config['SLACK_TOKEN']
+    slack_token = GetConfig('SLACK_TOKEN')
     assert slack_token is not None, 'Please configure SLACK_TOKEN flask configuration.'
 
-    icon_url = icon_url or app.config['STATIC_URL'] + 'gir_stare.png'
-    username = username or '%(SLACK_USER)s@%(SLACK_HOST)s' % app.config
+    icon_url = icon_url or GetConfig('STATIC_URL') + 'gir_stare.png'
+    username = username or GetConfig('SLACK_USER') + '@' + GetConfig('SLACK_HOST')
 
-    room = room or app.config['SLACK_ROOM']
+    room = room or GetConfig('SLACK_ROOM')
 
     slack = SlackClient(slack_token)
     slack.api_call(
@@ -266,5 +280,5 @@ def SlackMessage(message, icon_url=None, username=None, room=None):
 # Entry Point
 #---------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
-    port = int(app.config['FLASK_PORT'])
+    port = int(GetConfig('FLASK_PORT'))
     app.run(host='0.0.0.0', port=port, debug=True, use_reloader=True)
