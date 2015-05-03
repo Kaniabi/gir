@@ -1,5 +1,5 @@
 /.idea/
-/.vagrant/
+.vagrant/
 __pycache__/
 *.swp
 *.py[cod]

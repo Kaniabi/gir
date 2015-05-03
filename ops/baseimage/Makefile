@@ -1,12 +1,14 @@
 CONTAINER_NAME = quay.io/kaniabi/baseimage
 NAME = baseimage
-VERSION = v1.1
+VERSION = v1.2
 
-.PHONY: build 
+.PHONY: build, publish
 
 all: build
 
 build:
-	sudo docker login quay.io
 	sudo docker build --rm -t latest -t latest -t $(CONTAINER_NAME):$(VERSION) .
+
+publish:
+	sudo docker login quay.io
 	sudo docker pull

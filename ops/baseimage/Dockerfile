@@ -13,5 +13,6 @@ RUN \
     apt-get install -y nginx supervisor python3-pip git && \
     pip3 install uwsgi flask flask-debug flask-appconfig requests pytest mock six && \
     apt-get clean && \
+    apt-get purge && \
     echo "\ndaemon off;" >> /etc/nginx/nginx.conf && \
     rm /etc/nginx/sites-enabled/default

@@ -1,7 +1,7 @@
 gir:
-  image: 'quay.io/kaniabi/gir:latest'
+  image: 'quay.io/kaniabi/gir:v0.2.3'
   environment:
-    - 'GIR_COUCHDB_SERVER=http://$COUCHDB_PORT_5984_TCP_ADDR:$COUCHDB_PORT_5984_TCP_PORT'
+    - 'GIR_COUCHDB_SERVER=http://couchdb:5984'
     - GIR_COUCHDB_DATABASE=gir-config
     - GIR_DEBUG=True
     - GIR_FLASK_PORT=80
@@ -23,11 +23,11 @@ gir:
     - couchdb
     - redis
   volumes:
-    - /home/gir:/home/gir
+    - /vagrant/gir/log:/gir/log
   ports:
     - '80:80'
-  roles:
-    - global
+#  roles:
+#    - global
 
 couchdb:
   image: 'tutum/couchdb:latest'
