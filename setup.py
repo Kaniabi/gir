@@ -40,7 +40,6 @@ setup(
         'redis',
         # App framework
         'flask',
-        'gir',
         # TODO: #7 Find out how to use github urls on setup.py
         # 'git+https://github.com/slackhq/python-slackclient.git@39de60050e',
         # Apps
