@@ -30,8 +30,11 @@ def GetConfig(config):
     :param unicode config:
     :return unicode:
     '''
+    import six
+
     result = app.config[config]
-    result = os.path.expandvars(result)
+    if isinstance(result, six.text_type):
+        result = os.path.expandvars(result)
     return result
 
 
@@ -44,16 +47,20 @@ def index():
     )
 
 
-@app.route("/message", methods=['POST'])
+@app.route("/message", methods=['GET', 'POST'])
 def message():
     from flask import request
 
-    return EventFlow.HandleRoute(
-        request.get_json(),
-        '`message`',
-        icon_url='gir_sitting.png',
-        username='`username`',
-    )
+    if request.method == 'GET':
+        result = '<pre>curl -X POST -r {"message" : "Oi"}</pre>'
+    else:
+        result = EventFlow.HandleRoute(
+            request.get_json(),
+            '`message`',
+            icon_url='gir_sitting.png',
+            username='`username`',
+        )
+    return result
 
 
 @app.route("/webhook/<event_id>", methods=('GET', 'POST'))

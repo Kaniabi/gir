@@ -11,8 +11,10 @@ app = App('girctl')
 
 
 DEFAULT_ROOM = '#bos-ama'
-DEFAULT_HOST = '45.55.243.17'
-DEFAULT_PORT = 80
+DEFAULT_HOST = 'localhost'
+DEFAULT_PORT = 5000
+
+
 
 @app
 def Message(console_, room=DEFAULT_ROOM, username=None, host=DEFAULT_HOST, port=DEFAULT_PORT, *message):
@@ -107,6 +109,9 @@ def Run(console_, name='gir'):
 
 
 def _SlackMessage(console_, message, username=None, room=DEFAULT_ROOM, host=DEFAULT_HOST, port=DEFAULT_PORT):
+    '''
+    Sends a mesage to gir server.
+    '''
     USER = getpass.getuser()
     HOST = socket.gethostname()
     username = username or '%s@%s' % (USER ,HOST)
@@ -121,14 +126,24 @@ def _SlackMessage(console_, message, username=None, room=DEFAULT_ROOM, host=DEFA
 
 
 def _SlackData(console_, url, data, room=DEFAULT_ROOM, host=DEFAULT_HOST, port=DEFAULT_PORT):
-    import json
+    '''
+    Sends arbitrary data to gir server.
+    :param console_:
+    :param unicode url: A GIR url, usually /webhook/xxx or /message
+    :param unicode data:
+    :param unicode room:
+    :param unicode host:
+    :param int port:
+    :return:
+    '''
     import requests
 
     headers = {
-        'Content-type': 'application/json; charset=utf-8',
-        'Accept': 'text/plain',
+        'User-Agent' : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36',
+        'Content-type' : 'application/json; charset=utf-8',
+        'Accept' : 'text/json',
     }
-    url = 'http://%(host)s%(url)s' % locals()
+    url = 'http://%(host)s:%(port)s%(url)s' % locals()
     console_.Print('<yellow>%(url)s</>' % locals())
     r = requests.post(
         url,
