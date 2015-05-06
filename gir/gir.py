@@ -4,6 +4,7 @@ import json
 import os
 
 
+
 def CreateApp(configfile=None):
     from flask import Flask
     from flask.ext.appconfig import AppConfig
@@ -282,12 +283,3 @@ def SlackMessage(message, icon_url=None, username=None, room=None):
         icon_url=icon_url,
         username=username,
     )
-
-
-
-#---------------------------------------------------------------------------------------------------
-# Entry Point
-#---------------------------------------------------------------------------------------------------
-if __name__ == "__main__":
-    port = int(GetConfig('FLASK_PORT'))
-    app.run(host='0.0.0.0', port=port, debug=True, use_reloader=True)
