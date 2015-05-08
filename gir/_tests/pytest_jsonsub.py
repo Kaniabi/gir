@@ -4,7 +4,7 @@ import pytest
 
 
 def test_JsonSub():
-    from jsonsub import JsonSub
+    from gir.jsonsub import JsonSub
 
     data = {
         'message' : 'Hello, world!',
@@ -21,7 +21,7 @@ def test_JsonSub():
 
 
 def test_Remapping():
-    from jsonsub import Remapping
+    from gir.jsonsub import Remapping
 
     data = {
         'message' : 'Hello, world!',
@@ -86,7 +86,7 @@ def test_Remapping():
 
 
 def test_StashJson():
-    from jsonsub import JsonSub
+    from gir.jsonsub import JsonSub
 
     data = {
       "repository": {

@@ -13,7 +13,7 @@ def CreateApp(configfile=None):
     from flask.ext.rq import RQ
 
     result = Flask(__name__)
-    AppConfig(result, default_settings="default_config", configfile=configfile)
+    AppConfig(result, default_settings="gir.config", configfile=configfile)
     result.config['RQ_DEFAULT_URL'] = result.config['REDIS_URL']
     RQDashboard(result)
     Debug(result)

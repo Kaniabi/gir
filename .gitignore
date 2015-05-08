@@ -1,4 +1,5 @@
 /.idea/
+.venv/
 .vagrant/
 __pycache__/
 *.swp

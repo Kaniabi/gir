@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-from gir import app, EventFlow
+from gir.eventflow import app, EventFlow
 import json
 import mock
 

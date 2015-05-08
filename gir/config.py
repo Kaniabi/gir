@@ -1,5 +1,5 @@
 DEBUG = True
-FLASK_PORT = 5000
+PORT = 5000
 STATIC_URL = 'http://localhost:5000/static/'
 SLACK_TOKEN = 'xoxb-3724390083-OaNvuxp0CbYdo0fiy5kPBcWE'
 SLACK_ROOM = '#bos-ama'

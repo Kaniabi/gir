@@ -13,8 +13,12 @@ mock
 # Job queue
 flask-rq
 rq-dashboard
-rq
-redis
+rq-gevent-worker
+#DEPENDENCIES rq
+#DEPENDENCIES redis
+
+# Help pages
+markdown2
 
 # Database
 couchdb

@@ -14,6 +14,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network :forwarded_port, guest: 5101, host: 5101, id: "couchdb"
   config.vm.network :forwarded_port, guest: 5102, host: 5102, id: "redis"
 
+  config.vm.synced_folder "x:/gir/", "/gir"
+
   config.vm.provider :virtualbox do |v|
     v.name = NAME
     v.gui = false
