@@ -74,25 +74,6 @@ def Exec(console_, room=DEFAULT_ROOM, *cmd_line):
 
 
 @app
-def FillDb(console_):
-    '''
-    DEVELOPMENT
-    '''
-    from gir import EventFlow
-
-    database = EventFlow.GetDatabase('http://188.226.245.90:5984')
-    if database is None:
-        console_.Print("Error: Can't connect to couchdb server.")
-        return 1
-
-    database['circleci'] = dict(
-        message = 'Job <`payload.build_url`|`payload.vcs_url`#`payload.branch`>',
-        icon_url = 'circle.png',
-        username = 'CircleCI',
-    )
-
-
-@app
 def Run(console_, name='gir'):
     '''
     '''
